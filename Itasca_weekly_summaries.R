@@ -99,6 +99,34 @@ class(C2A_R1_m10_dailymean)
 as_data_frame(C2A_R1_m10_dailymean)
 class(C2A_R1_m10_dailymean)
 
+#Copied and pasted the last chunk working with C2A_R1_m10 to try something new:
+#Use of tidyverse
+#df2 %>% group_by(week = week(longdate)) %>% summarise(meantemp = mean(value))
+
+#might allow me to bypass the separation of date.time into year, month, day components.
+#will be simpler if I want to sort by weeks.
+
+?summarise_by_time()
+
+C2A_R1_m10_weeklymean <- mutate(C2A_R1_m10,'date.time' = mdy_hm(date.time)) %>% 
+  separate('date.time',
+           into = c('longdate', 'time'),
+           sep = ' ') %>% 
+  group_by(week = week(longdate)) %>% 
+  summarise(meantemp = mean(value))
+
+
+#%>% 
+ # separate('longdate',
+  #         into = c('year', 'month', 'day'),
+   #        sep = '-',
+    #       remove = FALSE) %>% 
+#  group_by(year, month, week) %>% 
+ # summarise(meantemp = mean(value)) 
+
+view(C2A_R1_m10_dailymean)
+class(C2A_R1_m10_dailymean)
+
 
 #setting up a function to handle create ALL csv "daily" files: "create_csv_daily"
 
