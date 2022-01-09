@@ -1,10 +1,10 @@
 ---
-  title: "Itasca_mega_merge"
+  title: "Itasca_mega_merge_weekly"
 author: "Sara DeLaurentis"
-date: "09/15/2021"
+date: "01/08/2022"
 note: 
 output: html_document
-purpose: "to attempt merging all of the iButton outputs into one long .csv."
+purpose: "to attempt merging all of the iButton outputs into one long .csv, weekly temperatures summarized."
 
 ---
 
