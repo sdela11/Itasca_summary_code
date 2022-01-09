@@ -89,7 +89,7 @@ C2A_R1_m10_dailymean <- mutate(C2A_R1_m10,'date.time' = mdy_hm(date.time)) %>%
                 into = c('year', 'month', 'day'),
                 sep = '-',
                 remove = FALSE) %>% 
-  group_by(year, month, day) %>% 
+  group_by(year, month, week) %>% 
   summarise(meantemp = mean(value)) 
 
 view(C2A_R1_m10_dailymean)
