@@ -1,7 +1,7 @@
 ---
-  title: "Itasca_dailes_temps"
-author: "Sara"
-date: "01/08/2021"
+  title: "Itasca_weekly_temps"
+author: "Sara DeLaurentis"
+date: "01/08/2022"
 note:  "see also Itasca mean temps"
 output: html_document
 
