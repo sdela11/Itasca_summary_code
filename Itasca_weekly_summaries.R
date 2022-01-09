@@ -25,7 +25,7 @@ name.data <- file.names %>%
   str_split_fixed("_", n=5)
 
 
-full.file.names <- list.files("./CLEAN_DATA", full.names = TRUE)
+full.file.names <- list.files("./ibuttons", full.names = TRUE)
 head(full.file.names)
 
 name.data <- cbind(full.file.names, name.data)
@@ -34,7 +34,7 @@ head(name.data)
 tail(name.data)
 
 
-file.names <- list.files("./CLEAN_DATA", full.names = FALSE)
+file.names <- list.files("./ibuttons", full.names = FALSE)
 head(file.names)
 tail(file.names)
 
@@ -69,7 +69,7 @@ str(name.df)
 #05/14/2021: Added metadata column
 
 
-C2A_R1_m10 <- read.csv("./CLEAN_DATA/C2A_R1_m10_i36_2020.csv")
+C2A_R1_m10 <- read.csv("./ibuttons/C2A_R1_m10_i36_2020.csv")
 
 #checking if it was read in properly
 head(C2A_R1_m10)
@@ -194,17 +194,17 @@ create_csv_daily <- function(full_paths, labels){
 
 
 #Setting up inputs for the function. final input is df_daily_input
-file.names <- list.files("./CLEAN_DATA", full.names = FALSE)
+file.names <- list.files("./ibuttons", full.names = FALSE)
 name.data.dailies <- file.names %>%  
   str_replace(".csv", "") %>% 
   as_data_frame()
 head(name.data.dailies)
 tail(name.data.dailies)
 
-full.file.names <- list.files("./CLEAN_DATA", full.names = TRUE) %>% 
+full.file.names <- list.files("./ibuttons", full.names = TRUE) %>% 
   as_data_frame()
 
-full.file.names <- list.files("./CLEAN_DATA", full.names = TRUE)
+full.file.names <- list.files("./ibuttons", full.names = TRUE)
 head(full.file.names)
 
 df_daily_input <- cbind(full.file.names, name.data.dailies)
@@ -221,7 +221,7 @@ tail(df_daily_input)
 pwalk(df_daily_input, create_csv_daily)
 
 ##To TEST just ONE .csv file:
-create_csv_daily("./CLEAN_DATA/C2A_R1_m10_i36_2020.csv", "C2A_R1_m10_i36_2020")
+create_csv_daily("./ibuttons/C2A_R1_m10_i36_2020.csv", "C2A_R1_m10_i36_2020")
 
 
 
@@ -304,7 +304,7 @@ dev.off()
 #For C2A_R2_m10_monthlymean 
 
 name.df[name.df$treatment == "C2A",]
-C2A_R2_m10 <- read.csv("./CLEAN_DATA/C2A_R2_m10_i32_2020.csv")
+C2A_R2_m10 <- read.csv("./ibuttons/C2A_R2_m10_i32_2020.csv")
 
 #checking if it was read in properly
 head(C2A_R2_m10)
