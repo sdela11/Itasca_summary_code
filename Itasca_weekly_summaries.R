@@ -16,17 +16,19 @@ library(stringr)
 library(dplyr)
 library(glue) #from dplyr
 
+
+
 install.packages("cowplot")
 
 ## If necessary, see "Itasca_plot_maker_20210106.Rmd" for instructions on setting up a file list dataframe, as well as how to select files to read by treatment, rep, etc.
 
-name.data <- file.names %>%  
+setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/ibuttons")
+full.file.names <- list.files(full.names = TRUE)
+head(full.file.names)
+
+name.data <- full.file.names %>%  
   str_replace(".csv", "")%>%
   str_split_fixed("_", n=5)
-
-
-full.file.names <- list.files("./ibuttons", full.names = TRUE)
-head(full.file.names)
 
 name.data <- cbind(full.file.names, name.data)
 str(full.file.names)
