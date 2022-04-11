@@ -42,8 +42,9 @@ meta <- file_df$name %>%   #take the name column
   
 data.list.df <- cbind(file_df, meta)
   #  temp_df <- temp_df[, c(6,1,2,3,4,5,7,8)] # column re-ordering if necessary
-data.list.df <- data.list.df[order(data.list.df$site, data.list.df$rep, data.list.df$position, data.list.df$season), ]
+data.list.df <- data.list.df[order(data.list.df$site, data.list.df$rep, data.list.df$position, data.list.df$season), ] #for checking stuff
 
+data.list.df <- data.list.df[order(data.list.df$name),]
 
 view(data.list.df)
 
@@ -64,16 +65,11 @@ view(data.list.df)
 
 files.meta.list <- list()                   # Create empty list
 
-
-#Next, we can use a for-loop to store each row of our data frame as list element.
-
 for(i in 1:nrow(data.list.df)) {   #for(each variable in the sequence "1 through the number of rows in C2A"):
                           
   files.meta.list[[i]] <- data.list.df[i , ]  #create an element in files.meta.list from each row found in C2A
 }
-
-print(files.meta.list)
-
+#print(files.meta.list)
 
 #Step 2: 
 
