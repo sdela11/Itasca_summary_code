@@ -1,0 +1,99 @@
+---
+title: "Itasca_annual_summaries"
+author: "Sara DeLaurentis"
+date: "4/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+  
+library(lubridate)
+library(stringr)
+library(tidyverse)
+library(cowplot)
+library(stringr)
+library(dplyr)
+library(glue) #from dplyr
+
+
+```
+
+## R Markdown
+
+
+
+```{r }
+#create list of .csv files
+m <- list.files("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/CLEAN_DATA_copy", pattern = "*.csv")
+m
+
+file_df <- data.frame(paths = m, name = str_replace(m, ".csv", ""), full_paths = list.files("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/CLEAN_DATA_copy", pattern = "*.csv", full.names = TRUE))
+
+file_df
+
+meta <- file_df$name %>%   #take the name column 
+   str_split_fixed("_", n=5) %>% #split the strings, with _ as separator.
+   as.data.frame() #COERCE
+  colnames(meta) <- c("site", "rep", "position", "buttonID", "season") #
+  meta$CLEAN = NULL 
+  
+  
+data.list.df <- cbind(file_df, meta)
+  #  temp_df <- temp_df[, c(6,1,2,3,4,5,7,8)] # column re-ordering if necessary
+ 
+view(data.list.df)
+
+```
+
+
+
+
+```{r }
+
+#Step 1: Turn each row of metadata into a list element with filenames, site, rep, etc. as named elements within.
+
+
+files.meta.list <- list()                   # Create empty list
+
+
+#Next, we can use a for-loop to store each row of our data frame as list element.
+
+for(i in 1:nrow(C2A)) {   #for(each variable in the sequence "1 through the number of rows in C2A"):
+                          
+  files.meta.list[[i]] <- C2A[i , ]  #create an element in files.meta.list from each row found in C2A
+}
+
+#check it out: each element of the list (each [[x]]) contains the filenames and metadata, and they've maintained their column names as labels, so we can call out that named element when we want.
+C2A
+print(files.meta.list)
+
+
+#Step 2: Use lapply to perform the following on each list element:
+#Read .csv file given by the full_paths list element.
+#Assign metadata columns based on the other named elements.
+#Then, rbind all of those dataframes together for your finalTable
+
+csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given function along this list, each element in the list is the input.
+  df <- read.csv(files.meta.list[[i]]$full_paths, header=TRUE, sep = ",") #create "df" by reading the .csv given by full_paths.
+  df$site <- files.meta.list[[i]]$site    #next few rows are the addition of metadata columns based on the named element in the list. "Make a site column using the thing in the list at [[i]], that's labeled "site"
+  df$rep <- files.meta.list[[i]]$rep
+  df$position <- files.meta.list[[i]]$position
+  df$buttonID <- files.meta.list[[i]]$buttonID
+  df$season <- files.meta.list[[i]]$season
+  df #VERY IMPORTANT. I don't know why, but without this call for the whole dataframe, you get left with just the last column you created.
+  
+  })
+
+finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
+view(finalTable)
+
+ggplot(finalTable, aes(x=as.POSIXct(date.time, format = "%m/%d/%Y %H:%M"), y=value, group = position, color = position)) + 
+  geom_line() + 
+  xlab("Date/Time") + 
+  ylab("Temperature in C")
+
+
+```
+
