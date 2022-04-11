@@ -42,7 +42,8 @@ meta <- file_df$name %>%   #take the name column
   
 data.list.df <- cbind(file_df, meta)
   #  temp_df <- temp_df[, c(6,1,2,3,4,5,7,8)] # column re-ordering if necessary
-data.list.df <- data.list.df %>% group_by(season)
+data.list.df <- data.list.df[order(data.list.df$site, data.list.df$rep, data.list.df$position, data.list.df$season), ]
+
 
 view(data.list.df)
 
@@ -69,13 +70,13 @@ files.meta.list <- list()                   # Create empty list
 
 #Next, we can use a for-loop to store each row of our data frame as list element.
 
-for(i in 1:nrow(C2A)) {   #for(each variable in the sequence "1 through the number of rows in C2A"):
+for(i in 1:nrow(data.list.df)) {   #for(each variable in the sequence "1 through the number of rows in C2A"):
                           
-  files.meta.list[[i]] <- C2A[i , ]  #create an element in files.meta.list from each row found in C2A
+  files.meta.list[[i]] <- data.list.df[i , ]  #create an element in files.meta.list from each row found in C2A
 }
 
 #check it out: each element of the list (each [[x]]) contains the filenames and metadata, and they've maintained their column names as labels, so we can call out that named element when we want.
-C2A
+
 print(files.meta.list)
 
 
@@ -95,13 +96,13 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
   
   })
 
-finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
-view(finalTable)
+#finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
+#view(finalTable)
 
-ggplot(finalTable, aes(x=as.POSIXct(date.time, format = "%m/%d/%Y %H:%M"), y=value, group = position, color = position)) + 
-  geom_line() + 
-  xlab("Date/Time") + 
-  ylab("Temperature in C")
+#ggplot(finalTable, aes(x=as.POSIXct(date.time, format = "%m/%d/%Y %H:%M"), y=value, group = position, color = position)) + 
+#  geom_line() + 
+#  xlab("Date/Time") + 
+#  ylab("Temperature in C")
 
 
 ```
