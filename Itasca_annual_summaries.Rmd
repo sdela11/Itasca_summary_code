@@ -20,16 +20,16 @@ library(glue) #from dplyr
 
 ```
 
-## R Markdown
 
 
+##Create a dataframe to enable selection of .csv files.
 
 ```{r }
 #create list of .csv files
-m <- list.files("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/CLEAN_DATA_copy", pattern = "*.csv")
+m <- list.files("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/iButtons", pattern = "*.csv")
 m
 
-file_df <- data.frame(paths = m, name = str_replace(m, ".csv", ""), full_paths = list.files("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/CLEAN_DATA_copy", pattern = "*.csv", full.names = TRUE))
+file_df <- data.frame(paths = m, name = str_replace(m, ".csv", ""), full_paths = list.files("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21/iButtons", pattern = "*.csv", full.names = TRUE))
 
 file_df
 
@@ -42,12 +42,21 @@ meta <- file_df$name %>%   #take the name column
   
 data.list.df <- cbind(file_df, meta)
   #  temp_df <- temp_df[, c(6,1,2,3,4,5,7,8)] # column re-ordering if necessary
- 
+data.list.df <- data.list.df %>% group_by(season)
+
 view(data.list.df)
 
 ```
 
 
+### THIS IS THE CODE YOU'VE BEEN LOOKING FOR !!! ###
+### VERY COOOlll lists ###
+
+#What this does:
+
+#1. Takes the dataframe we created from the names of the selected files, turns each ROW into ONE list element with "site", "rep", etc. as named elements contained inside.
+
+#2. Uses lapply to read in the .csv files and attaches metadata.
 
 
 ```{r }
