@@ -29,7 +29,7 @@ full.file.names <- list.files("./CLEAN_DATA", full.names = TRUE)
 head(full.file.names)
 
 name.data <- cbind(full.file.names, name.data)
-str(full.file.names)
+str(full.file.names) 
 head(name.data)
 tail(name.data)
 

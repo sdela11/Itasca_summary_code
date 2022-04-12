@@ -94,6 +94,18 @@ view(finalTable)
 
 
 ```
+## ANNOTATED COPY ##
+
+
+### THIS IS THE CODE YOU'VE BEEN LOOKING FOR !!! ###
+### VERY COOOlll lists ###
+
+#What this does:
+
+#1. Takes the dataframe we created from the names of the selected files, turns each ROW into ONE list element with "site", "rep", etc. as named elements contained inside.
+
+#2. Uses lapply to read in the .csv files and attaches metadata.
+
 
 ```{r }
 
@@ -138,6 +150,31 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
 #  geom_line() + 
 #  xlab("Date/Time") + 
 #  ylab("Temperature in C")
+
+
+```
+
+
+## Mean Annual Temperature Summaries ##
+
+```{r }
+data <- finalTable
+head(data$date.time)
+data[30000,]
+
+START <- as.POSIXct("2020-01-01")
+BREAK <- as.POSIXct("2020-08-25")
+RESUME <- as.POSIXct("2020-09-30")
+END <- as.POSIXct("2020-12-31")
+
+annual.sums.df <- data %>% 
+  as.POSIXct(data$date.time, format = "%m/%d/%Y %H:%M") #%>% 
+  filter(date.time >= START & date.time <= END) %>% 
+  group_by(site, rep, position, season) %>% 
+  summarise(meantemp = mean(value))
+
+view(annual.sums.df)
+
 
 
 ```
