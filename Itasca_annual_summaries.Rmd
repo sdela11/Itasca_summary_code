@@ -80,13 +80,20 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){
   df$position <- files.meta.list[[i]]$position
   df$buttonID <- files.meta.list[[i]]$buttonID
   df$season <- files.meta.list[[i]]$season
+  df$date.time <- fast_strptime(df$date.time, format = c("%m/%d/%Y %H:%M", "%m/%d/%Y %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d %H:%M:%S"), lt = FALSE)
+  #df$date.time <- as.POSIXct(df$date.time, format = "%Y-%m-%d %H:%M") %>% round("mins")
   df #VERY IMPORTANT. I don't know why, but without this call for the whole dataframe, you get left with just the last column you created.
-  
   })
 
 finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
+
+#DON'T DO THIS: finalTable$date.time <- as.POSIXct(finalTable$date.time, format = c("%m/%d/%Y %H:%M", %m/%d/%Y %H:%M:%S")) %>% round("mins") #get rid of any potential "seconds" values
+
+str(finalTable)
 view(finalTable)
 
+problems <- finalTable %>% filter(is.na(date.time))
+view(problems)
 #ggplot(finalTable, aes(x=as.POSIXct(date.time, format = "%m/%d/%Y %H:%M"), y=value, group = position, color = position)) + 
 #  geom_line() + 
 #  xlab("Date/Time") + 
