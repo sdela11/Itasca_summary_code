@@ -92,11 +92,12 @@ finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
 
 str(finalTable)
 head(finalTable)
-#view(finalTable)
+view(finalTable)
+finalTable[(grep("2020-12-28", finalTable$date.time)),]
 
 #output problem table if needed.
-problems <- finalTable %>% filter(is.na(date.time))
-view(problems)
+#problems <- finalTable %>% filter(is.na(date.time))
+#view(problems)
 #view(problems[problems$buttonID == "i45",])
 #view(finalTable[finalTable$buttonID == "i101" & finalTable$season == "2021",])
 
@@ -177,6 +178,7 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
 data <- finalTable
 head(data$date.time)
 data[30000,]
+class(data[4,"date.time"])
 
 START <- as.POSIXct("2020-01-01")
 BREAK <- as.POSIXct("2020-08-25")
@@ -184,13 +186,23 @@ RESUME <- as.POSIXct("2020-09-30")
 END <- as.POSIXct("2020-12-31")
 
 annual.sums.df <- data %>% 
-  as.POSIXct(data$date.time, format = "%m/%d/%Y %H:%M") #%>% 
-  filter(date.time >= START & date.time <= END) %>% 
-  group_by(site, rep, position, season) %>% 
-  summarise(meantemp = mean(value))
+  subset.data.frame(date.time >= START & date.time <= END) 
+annual.sums.df <- annual.sums.df %>% 
+  subset.data.frame(date.time <= BREAK | date.time >= RESUME)
+
+#annual.sums.df <- data %>%                    
+ #  subset.data.frame(date.time <= BREAK || date.time >= RESUME)
+#filter(date.time >= START & date.time <= END) %>% 
+ # group_by(site, rep, position, season) %>% 
+ # summarise(meantemp = mean(value))
 
 view(annual.sums.df)
+str(annual.sums.df)
+check <- annual.sums.df %>% 
+  filter(date.time > as.POSIXct("2020-12-28", tz = ""))
 
+view(annual.sums.df[annual.sums.df$date.time > as.POSIXct("2020-12-28"),])
+view(check)
 
 
 ```
