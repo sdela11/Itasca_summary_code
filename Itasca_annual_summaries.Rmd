@@ -82,7 +82,9 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){
   df$season <- files.meta.list[[i]]$season
   #Converting the date.time column. There are multiple date formats that need to be dealt with.
   df$date.time <- if(grepl("M", df[1,"date.time"])){#    If there is an "M" present in the first row of date.time column (AM/PM), look for this format
-    as.POSIXct(df$date.time, format = c("%m/%d/%Y %I:%M:%S %p"), origin = "1970-01-01 00:00:00 UTC", tz = "")
+    print(df[1, "date.time"])
+    print(format(df[1, "date.time"]))
+    as.POSIXct(df$date.time, tryFormats = c("%m/%d/%y %I:%M:%S %p", "%m/%d/%Y %I:%M:%S %p"), tz = "") #just in case: origin = "1970-01-01 00:00:00 UTC",
   }else{as.POSIXct(df$date.time, tz = "", tryFormats = c("%m/%d/%Y %H:%M", "%m/%d/%Y %H:%M:%S")) #if no "M", look for these formats instead.
   }
   df #VERY IMPORTANT. I don't know why, but without this call for the whole dataframe, you get left with just the last column you created.
@@ -93,7 +95,7 @@ finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
 str(finalTable)
 head(finalTable)
 view(finalTable)
-finalTable[(grep("2020-12-28", finalTable$date.time)),]
+finalTable[(grep("12-28", finalTable$date.time)),] %>% filter(season == "2021")
 
 #output problem table if needed.
 #problems <- finalTable %>% filter(is.na(date.time))
