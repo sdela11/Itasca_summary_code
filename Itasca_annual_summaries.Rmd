@@ -80,13 +80,13 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){
   df$position <- files.meta.list[[i]]$position
   df$buttonID <- files.meta.list[[i]]$buttonID
   df$season <- files.meta.list[[i]]$season
-  #Converting the date.time column. There are multiple date formats that need to be dealt with.
-  df$date.time <- if(grepl("M", df[1,"date.time"])){#    If there is an "M" present in the first row of date.time column (AM/PM), look for this format
-    print(df[1, "date.time"])
-    print(format(df[1, "date.time"]))
-    as.POSIXct(df$date.time, tryFormats = c("%m/%d/%y %I:%M:%S %p", "%m/%d/%Y %I:%M:%S %p"), tz = "") #just in case: origin = "1970-01-01 00:00:00 UTC",
-  }else{as.POSIXct(df$date.time, tz = "", tryFormats = c("%m/%d/%Y %H:%M", "%m/%d/%Y %H:%M:%S")) #if no "M", look for these formats instead.
-  }
+  #Converting the date.time column. There may be multiple date formats that need to be dealt with. 
+ #print(df[1, "date.time"])
+  df$date.time <- mdy_hms(df$date.time, tz = "America/Chicago", truncated = 3) #Get R to recognize your current date format
+  df$date.time <- as.POSIXct((round(df$date.time, "mins")), tz = "America/Chicago") #Round off the seconds (turns into POSIXlt), re-convert to POSIXct.
+ # print(df[1, "date.time"]) # for checks
+ # print(df[4, "date.time"]) #for checks
+  
   df #VERY IMPORTANT. I don't know why, but without this call for the whole dataframe, you get left with just the last column you created.
   })
 
@@ -95,7 +95,7 @@ finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
 str(finalTable)
 head(finalTable)
 view(finalTable)
-finalTable[(grep("12-28", finalTable$date.time)),] %>% filter(season == "2021")
+
 
 #output problem table if needed.
 #problems <- finalTable %>% filter(is.na(date.time))
@@ -158,12 +158,19 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
   df$position <- files.meta.list[[i]]$position
   df$buttonID <- files.meta.list[[i]]$buttonID
   df$season <- files.meta.list[[i]]$season
+   #Converting the date.time column. There may be multiple date formats that need to be dealt with. 
+ #print(df[1, "date.time"])
+  df$date.time <- mdy_hms(df$date.time, tz = "America/Chicago", truncated = 3) #Get R to recognize your current date format
+  df$date.time <- as.POSIXct((round(df$date.time, "mins")), tz = "America/Chicago") #Round off the seconds (turns into POSIXlt), re-convert to POSIXct.
+ # print(df[1, "date.time"]) # for checks
+ # print(df[4, "date.time"]) #for checks
   df #VERY IMPORTANT. I don't know why, but without this call for the whole dataframe, you get left with just the last column you created.
   
   })
 
 #finalTable <- do.call(rbind, csv_LIST) ##JOIN TOGETHER
 #view(finalTable)
+
 
 #ggplot(finalTable, aes(x=as.POSIXct(date.time, format = "%m/%d/%Y %H:%M"), y=value, group = position, color = position)) + 
 #  geom_line() + 
