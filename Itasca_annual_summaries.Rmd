@@ -185,6 +185,9 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
 
 ```{r }
 data <- finalTable
+
+data <- read_csv("ALL.csv")
+head(data)
 head(data$date.time)
 data[30000,]
 class(data[4,"date.time"])
@@ -210,7 +213,6 @@ str(annual.sums.df)
 check <- annual.sums.df %>% 
   filter(date.time > as.POSIXct("2020-12-28", tz = ""))
 
-view(annual.sums.df[annual.sums.df$date.time > as.POSIXct("2020-12-28"),])
 view(check)
 
 
