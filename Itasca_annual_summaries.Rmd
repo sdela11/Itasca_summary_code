@@ -298,11 +298,17 @@ print(myplot)
 ## New graph trial
 
 plot.data <- annual.sums.df.OCT
-
+view(plot.data)
 as.factor(plot.data$site)
 
+plot.means <- annual.sums.df.OCT %>% 
+  group_by(site, position) %>% 
+  summarise(mean = mean(meantemp))
+view(plot.means)
+
 myplot2 <- ggplot(plot.data, aes(x = site, y = meantemp)) +
-  geom_point(size = .5)
+  geom_point(size = .6) + 
+  geom_bar(data = plot.means, stat = "identity")
 myplot2 <- myplot2 + facet_grid(rows = vars(position))
 
 ggsave("plot_test.png", width = 5, height = 6) 
