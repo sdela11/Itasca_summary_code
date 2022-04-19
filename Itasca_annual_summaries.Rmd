@@ -184,9 +184,9 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
 ## Mean Annual Temperature Summaries ##
 
 ```{r }
-data <- finalTable
+#data <- finalTable  #use this if you generated the finalTable using the code above.
 
-data <- read_csv("ALL.csv")
+data <- read_csv("ALL.csv")  #use this if you have a working table saved as ALL.csv.
 head(data)
 head(data$date.time)
 data[30000,]
@@ -200,15 +200,9 @@ RESUME <- as.POSIXct("2020-09-30", tz = "")
 END <- as.POSIXct("2020-12-31", tz = "")
 
 
-annual.sums.df <- data %>% 
-  subset.data.frame(date.time >= as.POSIXct("2020-01-01") & date.time <= as.POSIXct("2020-08-25")) 
-annual.sums.df <- annual.sums.df %>% 
-  subset.data.frame(date.time <= as.POSIXct("2020-09-30") | date.time >= as.POSIXct("2020-12-31"))
-
-
-annual.sums.df <- data %>% 
+data <- data %>% 
   subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df, including the break interval
-annual.sums.df <- annual.sums.df %>% 
+data <- data %>% 
   subset.data.frame(date.time <= BREAK | date.time >= RESUME) #then, cut out the break interval
 
 #annual.sums.df <- data %>%                    
@@ -217,12 +211,66 @@ annual.sums.df <- annual.sums.df %>%
  # group_by(site, rep, position, season) %>% 
  # summarise(meantemp = mean(value))
 
-view(annual.sums.df)
-str(annual.sums.df)
-check <- annual.sums.df %>% 
+view(data)
+str(data)
+check <- data %>% 
   filter(date.time > as.POSIXct("2020-12-28", tz = ""))
 
 view(check)
+
+#annual.sums.df <- data %>%                    
+ #  subset.data.frame(date.time <= BREAK || date.time >= RESUME)
+#filter(date.time >= START & date.time <= END) %>% 
+ # group_by(site, rep, position, season) %>% 
+ # summarise(meantemp = mean(value))
+
+```
+
+
+```{r }
+
+annual.sums.df.2020 <- data %>%
+  group_by(site, rep, position) %>% 
+  summarise(meantemp = mean(value))
+
+view(annual.sums.df.2020)
+write_csv(annual.sums.df.2020, "annual_sums_2020_1.csv")
+
+
+
+
+
+```
+
+##Annual summaries for September 2020 - September 2021
+
+```{r}
+#Annual summaries for September 2020 - September 2021
+
+data <- read_csv("ALL.csv")
+
+START <- as.POSIXct("2020-09-01", tz = "")
+#BREAK <- as.POSIXct("2020-08-25", tz = "")
+#RESUME <- as.POSIXct("2020-09-30", tz = "")
+END <- as.POSIXct("2021-08-31", tz = "")
+
+
+data <- data %>% 
+  subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df, including the break interval
+
+annual.sums.df.SEP <- data %>%
+  group_by(site, rep, position) %>% 
+  summarise(meantemp = mean(value), length = length(date.time)) #how many values are in each group? Use this column to weed out sensors with only a few cells of data.
+annual.sums.df.SEP <- annual.sums.df.SEP %>% 
+  subset.data.frame(length > 500) #only select rows where the length column value is greater than 500.
+
+view(annual.sums.df.SEP)
+write_csv(annual.sums.df.SEP, "annual_sums_SEP_1.csv")
+```
+
+
+```{r}
+
 
 
 ```
