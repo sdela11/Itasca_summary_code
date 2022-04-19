@@ -265,7 +265,7 @@ annual.sums.df.SEP <- annual.sums.df.SEP %>%
   subset.data.frame(length > 500) #only select rows where the length column value is greater than 500.
 
 view(annual.sums.df.SEP)
-write_csv(annual.sums.df.SEP, "annual_sums_SEP_1.csv")
+write_csv(annual.sums.df.SEP, "annual_sums_OCT_1.csv")
 ```
 
 
