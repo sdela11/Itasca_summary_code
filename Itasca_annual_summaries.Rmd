@@ -282,7 +282,7 @@ plot.data <-  plot.data %>%
 #as.factor(plot.data$position)
 #as.factor(plot.data$buttonID)
 
-myplot <- ggplot(plot.data, aes(x = site, y = mean(value), group = position, color = position)) + 
+myplot <- ggplot(plot.data.z, aes(x = site, y = mean(value), color = position)) + 
   geom_col(position = "dodge") + 
   xlab("Site") + 
   ylab("Temperature in C")
@@ -290,3 +290,14 @@ myplot <- myplot + facet_grid(rows = vars(position))
 
 print(myplot)
 ```
+
+```{r}
+plot.data.z <- data %>% 
+  group_by(site, rep, position) %>% 
+  nest()
+str(plot.data.z)
+
+
+
+```
+
