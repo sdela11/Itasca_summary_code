@@ -270,7 +270,18 @@ write_csv(annual.sums.df.SEP, "annual_sums_SEP_1.csv")
 
 
 ```{r}
+plot.data <- data %>% 
+  group_by(site, rep, position) 
+plot.data <-  plot.data %>% 
+  subset.data.frame(length(date.time) >500) %>% 
+  group_by(site, rep, position)
+#view(plot.data)
 
+myplot <- ggplot() + 
+  geom_col(plot.data, aes(fill = factor(site), x = site, y = mean(value)), position = "dodge") + 
+  xlab("Site") + 
+  ylab("Temperature in C")
+myplot <- myplot + facet_grid(rows = vars(position))
 
-
+print(myplot)
 ```
