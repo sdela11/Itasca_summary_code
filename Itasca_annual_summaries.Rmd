@@ -258,37 +258,56 @@ END <- as.POSIXct("2021-09-30", tz = "")
 data <- data %>% 
   subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df, including the break interval
 
-annual.sums.df.SEP <- data %>%
+annual.sums.df.OCT <- data %>%
   group_by(site, rep, position) %>% 
   summarise(meantemp = mean(value), length = length(date.time)) #how many values are in each group? Use this column to weed out sensors with only a few cells of data.
-annual.sums.df.SEP <- annual.sums.df.SEP %>% 
+annual.sums.df.OCT <- annual.sums.df.OCT %>% 
   subset.data.frame(length > 500) #only select rows where the length column value is greater than 500.
 
-view(annual.sums.df.SEP)
-write_csv(annual.sums.df.SEP, "annual_sums_OCT_1.csv")
+view(annual.sums.df.OCT)
+write_csv(annual.sums.df.OCT, "annual_sums_OCT_1.csv") 
 ```
 
 
 ```{r}
 plot.data <- data %>% 
-  group_by(site, rep, position) 
-plot.data <-  plot.data %>% 
+  group_by(site, position) 
+plot.data <-plot.data %>% 
   subset.data.frame(length(date.time) >500) %>% 
-  group_by(site, rep, position)
-#view(plot.data)
+  group_by(site, position)
 
-#as.factor(plot.data$site)
+
+str(plot.data)
+
+means <- 
+
+as.factor(plot.data$site)
 #as.factor(plot.data$rep)
 #as.factor(plot.data$position)
 #as.factor(plot.data$buttonID)
 
-myplot <- ggplot(plot.data.z, aes(x = site, y = mean(value), color = position)) + 
-  geom_col(position = "dodge") + 
-  xlab("Site") + 
-  ylab("Temperature in C")
+myplot <- ggplot(data = plot.data, aes(site, mean(value)), fill = "blue") + 
+  geom_col(position = "dodge")
 myplot <- myplot + facet_grid(rows = vars(position))
-
+myplot <- myplot + xlab("Site") + ylab("Temperature in C")
+  
 print(myplot)
+
+
+
+## New graph trial
+
+plot.data <- annual.sums.df.OCT
+
+as.factor(plot.data$site)
+
+myplot2 <- ggplot(plot.data, aes(x = site, y = meantemp)) +
+  geom_point(size = .5)
+myplot2 <- myplot2 + facet_grid(rows = vars(position))
+
+ggsave("plot_test.png", width = 5, height = 6) 
+#print(myplot2)
+
 ```
 
 ```{r}
