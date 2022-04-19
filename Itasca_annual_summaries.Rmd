@@ -192,15 +192,24 @@ head(data$date.time)
 data[30000,]
 class(data[4,"date.time"])
 
-START <- as.POSIXct("2020-01-01")
-BREAK <- as.POSIXct("2020-08-25")
-RESUME <- as.POSIXct("2020-09-30")
-END <- as.POSIXct("2020-12-31")
+
+#For the year 2020, Jan 1 - Dec 31.
+START <- as.POSIXct("2020-01-01", tz = "")
+BREAK <- as.POSIXct("2020-08-25", tz = "")
+RESUME <- as.POSIXct("2020-09-30", tz = "")
+END <- as.POSIXct("2020-12-31", tz = "")
+
 
 annual.sums.df <- data %>% 
-  subset.data.frame(date.time >= START & date.time <= END) 
+  subset.data.frame(date.time >= as.POSIXct("2020-01-01") & date.time <= as.POSIXct("2020-08-25")) 
 annual.sums.df <- annual.sums.df %>% 
-  subset.data.frame(date.time <= BREAK | date.time >= RESUME)
+  subset.data.frame(date.time <= as.POSIXct("2020-09-30") | date.time >= as.POSIXct("2020-12-31"))
+
+
+annual.sums.df <- data %>% 
+  subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df, including the break interval
+annual.sums.df <- annual.sums.df %>% 
+  subset.data.frame(date.time <= BREAK | date.time >= RESUME) #then, cut out the break interval
 
 #annual.sums.df <- data %>%                    
  #  subset.data.frame(date.time <= BREAK || date.time >= RESUME)
