@@ -227,21 +227,6 @@ view(check)
 ```
 
 
-```{r }
-
-annual.sums.df.2020 <- data %>%
-  group_by(site, rep, position) %>% 
-  summarise(meantemp = mean(value))
-
-view(annual.sums.df.2020)
-write_csv(annual.sums.df.2020, "annual_sums_2020_1.csv")
-
-
-
-
-
-```
-
 ##Annual summaries for September 2020 - September 2021
 
 ```{r}
