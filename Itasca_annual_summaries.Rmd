@@ -299,7 +299,7 @@ print(myplot)
 
 plot.data <- annual.sums.df.OCT
 view(plot.data)
-as.factor(plot.data$site)
+plot.data$site <- as.factor(plot.data$site)
 
 plot.means <- annual.sums.df.OCT %>% 
   group_by(site, position) %>% 
