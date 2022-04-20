@@ -252,10 +252,12 @@ annual.sums.df.OCT <- data %>%
             max_temp_time = date(date.time[which.max(x = value)]),
             length = length(date.time)) 
 
-            
 #how many values are in each group? Use this column to weed out sensors with only a few cells of data.
+
 annual.sums.df.OCT <- annual.sums.df.OCT %>% 
   subset.data.frame(length > 500) #only select rows where the length column value is greater than 500.
+annual.sums.df.OCT$length = NULL # delete length column       
+
 
 view(annual.sums.df.OCT)
 write_csv(annual.sums.df.OCT, "annual_sums_OCT_1.csv") 
