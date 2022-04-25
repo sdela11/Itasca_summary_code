@@ -186,18 +186,19 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
 ```{r }
 #data <- finalTable  #use this if you generated the finalTable using the code above.
 
-data <- read_csv("ALL.csv")  #use this if you have a working table saved as ALL.csv.
-head(data)
+data <- read_csv("ALL.csv")
+head(data)#use this if you have a working table saved as ALL.csv.
 head(data$date.time)
-data[30000,]
-class(data[4,"date.time"])
-
+data$date.time <- as.POSIXct(data$date.time, tz = "")
+head(data$date.time)
+print(data[30000,])
+#class(data[4,"date.time"])
 
 #For the year 2020, Jan 1 - Dec 31.
-START <- as.POSIXct("2020-01-01", tz = "")
-BREAK <- as.POSIXct("2020-08-25", tz = "")
-RESUME <- as.POSIXct("2020-09-30", tz = "")
-END <- as.POSIXct("2020-12-31", tz = "")
+START <- as.POSIXct("2020-01-01 00:00:00", tz = "")
+BREAK <- as.POSIXct("2020-08-25 00:00:00", tz = "")
+RESUME <- as.POSIXct("2020-09-30 00:00:00", tz = "")
+END <- as.POSIXct("2020-12-31 00:00:00", tz = "")
 
 
 data <- data %>% 
