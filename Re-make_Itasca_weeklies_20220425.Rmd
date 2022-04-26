@@ -20,62 +20,75 @@ library(ggplot2)
 ```{r }
 data <- read.csv("ALL.csv")
 
-data$date.time <- data$date.time %>% as.POSIXlt(tz = "")
+data$date.time <- data$date.time %>% as.POSIXlt(tz = "") #set date/time class to POSIXlt for greater ease in parsing date elements.
 head(data$date.time)
-data <- 
-  
 
+# -- subset by date, add week-counting columns, calculate weekly means --
 
 START <- as.POSIXlt("2020-10-01 00:00:00", tz = "")
 #BREAK <- as.POSIXlt("2020-08-25", tz = "")
 #RESUME <- as.POSIXlt("2020-09-30", tz = "")
 END <- as.POSIXlt("2021-10-01 00:00:00", tz = "")
 
-
 data <- data %>% 
   subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
-  filter(!is.na(value))  # Apply filter & is.na
+  filter(!is.na(value))  # Apply filter & !is.na
 
-annual.sums.df.OCT <- data %>%
+week.START <- as.POSIXlt("2020-10-01 00:00:00", tz = "")
+wday.no <- as.POSIXlt(week.START)$wday #store weekday integer
+data$week.begin <- floor_date(as.POSIXlt(data$date.time), unit = "weeks", week_start = wday.no) #create week.begin column
+data$week.no <- (1 + difftime(data$week.begin, week.START, units = "weeks")) %>% 
+  round()
+#data[1:25,]
+
+# WEEKLY.MEANS.DF STARTING AT "data"
+weekly.means.df <- data %>%
   group_by(site, rep, position) %>% 
-  summarise(meantemp = mean(value), 
-            min = min(value),
-            min_temp_time = date(date.time[which.min(x = value)]),
-            max = max(value),
-            max_temp_time = date(date.time[which.max(x = value)]),
-            length = length(date.time)) 
+  mutate(length = length(date.time)) %>% 
+  filter(length > 500)
+
+weekly.means.df <- weekly.means.df %>%
+  group_by(site, rep, position, week.no) %>% 
+  summarise(site = site, 
+            rep = rep, 
+            position = position, 
+            week.no = week.no, 
+            week.begin = week.begin, 
+            meantemp = round(mean(value), 2))
 
 #how many values are in each group? Use this column to weed out sensors with only a few cells of data.
 
-annual.sums.df.OCT <- annual.sums.df.OCT %>% 
-  subset.data.frame(length > 500) #only select rows where the length column value is greater than 500.
-annual.sums.df.OCT$length = NULL # delete length column 
+weekly.means.df <- weekly.means.df %>% 
+  subset.data.frame(length > 20) #only select rows where the length column value is greater than 500.
+#weekly.means.df$length = NULL # delete length column 
 
-#From "temperature_linear_models.Rmd"
-temps <- read.csv("C2A_R3_m0surf_i39_2020.csv")
-view(temps)
-class(temps$longdate)
-
-temps$longdate <- as.Date(temps$longdate) 
-week.START <- as.Date("2019-11-10")
-temps$week.begin <- floor_date(as.Date(temps$longdate), unit = "weeks")
-temps$week.no <- 1 + difftime(temps$week.begin, week.START, units = "weeks")
-
-  
-temps <- temps %>%  
-  group_by(week.no) %>%
-  mutate(week_avg = mean(value)) %>%  #mutate will create another column, but will not condense to a single value per week. To condense, which I think is optimal, use summarise/summarize.
-  summarize
-  
-view(temps)
+view(weekly.means.df)
 
 
 
+```
 
 
+```{r }
+ #
+weekly.sums.df <- weekly.means.df %>% 
+  group_by(site, rep, position) %>% 
+  summarise(annual.mean = round(mean(meantemp), 2), 
+            min = min(meantemp),
+            min_temp_time = date(week.begin[which.min(x = meantemp)]),
+            max = max(meantemp),
+            max_temp_time = date(week.begin[which.max(x = meantemp)]))
+#print(weekly.sums.df)
+view(weekly.sums.df)
 
-#might not need the stuff below here
-data <- mutate(date.time = mdy_hm(date.time)) %>% 
+write_csv(weekly.sums.df, "Weekly_summs_OCT_v1.csv")
+
+```
+## might not need the stuff below here
+
+```{r }
+
+data <- mutate(date.time = mdy_hms(date.time)) %>% 
   separate('date.time',
            into = c('longdate', 'time'),
            sep = ' ') %>% 
@@ -85,21 +98,6 @@ data <- mutate(date.time = mdy_hm(date.time)) %>%
                 remove = FALSE) %>% 
   group_by(year, month, week) %>% 
   summarise(meantemp = mean(value)) 
-
-
-
-
-
-
-
-
-```
-
-## 
-
-```{r }
-
-
 
 
 ```
