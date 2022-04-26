@@ -186,8 +186,7 @@ csv_LIST <- lapply(seq_along(files.meta.list), function(i){   #perform the given
 ```{r }
 #data <- finalTable  #use this if you generated the finalTable using the code above.
 
-data <- read_csv("ALL.csv")
-head(data)#use this if you have a working table saved as ALL.csv.
+data <- read_csv("ALL.csv") #use this if you have a working table saved as ALL.csv.
 head(data$date.time)
 data$date.time <- as.POSIXct(data$date.time, tz = "")
 head(data$date.time)
@@ -196,15 +195,15 @@ print(data[30000,])
 
 #For the year 2020, Jan 1 - Dec 31.
 START <- as.POSIXct("2020-01-01 00:00:00", tz = "")
-BREAK <- as.POSIXct("2020-08-25 00:00:00", tz = "")
-RESUME <- as.POSIXct("2020-09-30 00:00:00", tz = "")
-END <- as.POSIXct("2020-12-31 00:00:00", tz = "")
-
-
+#BREAK <- as.POSIXct("2020-08-25 00:00:00", tz = "")
+#RESUME <- as.POSIXct("2020-09-30 00:00:00", tz = "")
+END <- as.POSIXct("2021-01-01 00:00:00", tz = "")
+print(START)
+print(END)
 data <- data %>% 
   subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df, including the break interval
-data <- data %>% 
-  subset.data.frame(date.time <= BREAK | date.time >= RESUME) #then, cut out the break interval
+#data <- data %>% 
+#  subset.data.frame(date.time <= BREAK | date.time >= RESUME) #then, cut out the break interval
 
 #annual.sums.df <- data %>%                    
  #  subset.data.frame(date.time <= BREAK || date.time >= RESUME)
@@ -235,14 +234,15 @@ view(check)
 
 data <- read_csv("ALL.csv")
 
-START <- as.POSIXct("2020-10-01", tz = "")
+START <- as.POSIXct("2020-10-01 00:00:00", tz = "")
 #BREAK <- as.POSIXct("2020-08-25", tz = "")
 #RESUME <- as.POSIXct("2020-09-30", tz = "")
-END <- as.POSIXct("2021-09-30", tz = "")
+END <- as.POSIXct("2021-10-01 00:00:00", tz = "")
 
 
 data <- data %>% 
-  subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df, including the break interval
+  subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
+  filter(!is.na(value))  # Apply filter & is.na
 
 annual.sums.df.OCT <- data %>%
   group_by(site, rep, position) %>% 
