@@ -36,21 +36,22 @@ data <- data %>%
   subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
   filter(!is.na(value))  # Apply filter & !is.na
 
+# WEEKLY.MEANS.DF STARTING AT "data"
+weekly.means.df <- data %>%
+  group_by(site, rep, position) %>% 
+  mutate(length = length(date.time)) %>% 
+  filter(length > 500)
+```
+
+##Code for means at set weeks. See next chunk for rolling means.
+
+```{r }
 week.START <- as.POSIXlt("2020-10-01 00:00:00", tz = "")
 wday.no <- as.POSIXlt(week.START)$wday #store weekday integer
 data$week.begin <- floor_date(as.POSIXlt(data$date.time), unit = "weeks", week_start = wday.no) #create week.begin column
 data$week.no <- (1 + difftime(data$week.begin, week.START, units = "weeks")) %>% 
   round()
 #data[1:25,]
-
-# WEEKLY.MEANS.DF STARTING AT "data"
-weekly.means.df <- data %>%
-  group_by(site, rep, position) %>% 
-  mutate(length = length(date.time)) %>% 
-  filter(length > 500)
-
-
-# CHOOSE A PATH: Weekly mean with set weeks, or rollmean:
 
 #Set weeks
 weekly.means.df <- weekly.means.df %>%
@@ -62,20 +63,6 @@ weekly.means.df <- weekly.means.df %>%
             week.begin = week.begin, 
             meantemp = round(mean(value), 2))
 
-#Rolling mean
-weekly.means.df <- data %>%
-  group_by(site, rep, position) %>% 
-  mutate(weekly.roll = rollmean(value, 7))
-
-weekly.means.df <- weekly.means.df %>%
-  group_by(site, rep, position) %>% 
-  summarise(site = site, 
-            rep = rep, 
-            position = position, 
-            meantemp = round(mean(value), 2),
-            weekly.roll = weekly.roll)
-
-
 #how many values are in each group? Use this column to weed out sensors with only a few cells of data.
 
 weekly.means.df <- weekly.means.df %>% 
@@ -83,8 +70,52 @@ weekly.means.df <- weekly.means.df %>%
 #weekly.means.df$length = NULL # delete length column 
 
 view(weekly.means.df)
+```
 
+##Code for rolling means (week, 2-week)
 
+```{r }
+
+#Rolling mean
+
+weekly.means.df <- data %>%
+  group_by(site, rep, position, date(date.time)) %>% 
+  mutate(date = date(date.time), daily.mean = round(mean(value), 2)) %>% 
+  ungroup()
+weekly.means.df$"date(date.time)" = NULL
+  #str(weekly.means.df)
+#view(weekly.means.df)
+
+#condense to dailies. Base R is superior in this case
+
+weekly.means.df <- weekly.means.df[!duplicated(weekly.means.df$date), ]
+weekly.means.df <- distinct(weekly.means.df, site, rep, position, date, .keep_all = TRUE)
+length(weekly.means.df$date)
+
+weekly.means.df <- weekly.means.df %>%
+ # group_by(site, rep, position) %>% 
+  mutate(weekly.roll = round(rollmean(daily.mean,7, fill = NA),2),
+         biweekly.roll = round(rollmean(daily.mean,14, fill = NA),2))
+view(weekly.means.df)
+
+#For rolling weekly mean summaries:
+
+weekly.sums.df <- weekly.means.df %>% 
+  group_by(site, rep, position) %>% 
+  summarise(min.1wk.roll = min(weekly.roll),
+            min.date.1wk.roll = date(date[which.min(x = weekly.roll)]),
+            max.1wk.roll = max(weekly.roll),
+            max.date.1wk.roll = date(date[which.max(x = weekly.roll)]),
+            
+            min.2wk.roll = min(biweekly.roll),
+            min.date.2wk.roll = date(date[which.min(x = biweekly.roll)]),
+            max.2wk.roll = max(biweekly.roll),
+            max.date.2wk.roll = date(date[which.max(x = biweekly.roll)]))
+
+#print(weekly.sums.df)
+view(weekly.sums.df)
+
+write_csv(weekly.sums.df, "Weekly_summs_roll_OCT_v1.csv")
 
 ```
 
@@ -98,22 +129,6 @@ weekly.sums.df <- weekly.means.df %>%
             min_temp_time = date(week.begin[which.min(x = meantemp)]),
             max = max(meantemp),
             max_temp_time = date(week.begin[which.max(x = meantemp)]))
-
-
-#For rolling weekly mean:
-
-weekly.sums.df <- weekly.means.df %>% 
-  group_by(site, rep, position) %>% 
-  summarise(annual.mean = round(mean(meantemp), 2), 
-            min = min(meantemp),
-            min_temp_time = date(week.begin[which.min(x = meantemp)]),
-            max = max(meantemp),
-            max_temp_time = date(week.begin[which.max(x = meantemp)]))
-
-#print(weekly.sums.df)
-view(weekly.sums.df)
-
-write_csv(weekly.sums.df, "Weekly_summs_roll_OCT_v1.csv")
 
 ```
 ## might not need the stuff below here
