@@ -88,7 +88,7 @@ weekly.means.df$"date(date.time)" = NULL
 
 #condense to dailies. Base R is superior in this case
 
-weekly.means.df <- weekly.means.df[!duplicated(weekly.means.df$date), ]
+#weekly.means.df <- weekly.means.df[!duplicated(weekly.means.df$date), ]
 weekly.means.df <- distinct(weekly.means.df, site, rep, position, date, .keep_all = TRUE)
 length(weekly.means.df$date)
 
@@ -115,7 +115,7 @@ weekly.sums.df <- weekly.means.df %>%
 #print(weekly.sums.df)
 view(weekly.sums.df)
 
-write_csv(weekly.sums.df, "Weekly_summs_roll_OCT_v1.csv")
+write_csv(weekly.sums.df, "Weekly_summs_ROLLING_OCT_v1.csv")
 
 ```
 
