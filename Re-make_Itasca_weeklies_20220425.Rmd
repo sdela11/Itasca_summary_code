@@ -49,6 +49,10 @@ weekly.means.df <- data %>%
   mutate(length = length(date.time)) %>% 
   filter(length > 500)
 
+
+# CHOOSE A PATH: Weekly mean with set weeks, or rollmean:
+
+#Set weeks
 weekly.means.df <- weekly.means.df %>%
   group_by(site, rep, position, week.no) %>% 
   summarise(site = site, 
@@ -57,6 +61,20 @@ weekly.means.df <- weekly.means.df %>%
             week.no = week.no, 
             week.begin = week.begin, 
             meantemp = round(mean(value), 2))
+
+#Rolling mean
+weekly.means.df <- data %>%
+  group_by(site, rep, position) %>% 
+  mutate(weekly.roll = rollmean(value, 7))
+
+weekly.means.df <- weekly.means.df %>%
+  group_by(site, rep, position) %>% 
+  summarise(site = site, 
+            rep = rep, 
+            position = position, 
+            meantemp = round(mean(value), 2),
+            weekly.roll = weekly.roll)
+
 
 #how many values are in each group? Use this column to weed out sensors with only a few cells of data.
 
@@ -72,7 +90,7 @@ view(weekly.means.df)
 
 
 ```{r }
- #
+ #SKIP this group for rolling mean:
 weekly.sums.df <- weekly.means.df %>% 
   group_by(site, rep, position) %>% 
   summarise(annual.mean = round(mean(meantemp), 2), 
@@ -80,10 +98,22 @@ weekly.sums.df <- weekly.means.df %>%
             min_temp_time = date(week.begin[which.min(x = meantemp)]),
             max = max(meantemp),
             max_temp_time = date(week.begin[which.max(x = meantemp)]))
+
+
+#For rolling weekly mean:
+
+weekly.sums.df <- weekly.means.df %>% 
+  group_by(site, rep, position) %>% 
+  summarise(annual.mean = round(mean(meantemp), 2), 
+            min = min(meantemp),
+            min_temp_time = date(week.begin[which.min(x = meantemp)]),
+            max = max(meantemp),
+            max_temp_time = date(week.begin[which.max(x = meantemp)]))
+
 #print(weekly.sums.df)
 view(weekly.sums.df)
 
-write_csv(weekly.sums.df, "Weekly_summs_OCT_v1.csv")
+write_csv(weekly.sums.df, "Weekly_summs_roll_OCT_v1.csv")
 
 ```
 ## might not need the stuff below here
