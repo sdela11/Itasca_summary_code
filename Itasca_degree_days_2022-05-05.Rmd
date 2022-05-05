@@ -29,20 +29,20 @@ head(data$date.time)
 
 # -- subset by date, add week-counting columns, calculate weekly means --
 
-START <- as.POSIXlt("2020-10-01 00:00:00", tz = "")
+START <- as.POSIXlt("2020-10-01 00:00:00", tz = "") #trying the october 1-yr set to see if the code works. 5-5, SD
 #BREAK <- as.POSIXlt("2020-08-25", tz = "")
 #RESUME <- as.POSIXlt("2020-09-30", tz = "")
 END <- as.POSIXlt("2021-10-01 00:00:00", tz = "")
 
-data[is.na(data$value),] %>% 
+data[is.na(data$value),] %>% #there should be a handful of NA's present if you're working with the right version of .csv files.
   print()
 
 data <- data %>% 
   subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
   filter(!is.na(value))  # Apply filter & !is.na
 
-# WEEKLY.MEANS.DF STARTING AT "data"
-weekly.means.df <- data %>%
+# remove partial datasets for the given window. Anything with less than 500 values gets removed.
+data <- data %>%
   group_by(site, rep, position) %>% 
   mutate(length = length(date.time)) %>% 
   filter(length > 500)
@@ -50,13 +50,21 @@ weekly.means.df <- data %>%
 
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
+## 
 
 ```{r two}
 
+daily.means.df <- data %>%
+  group_by(site, rep, position, date(date.time)) %>% 
+  summarise(date = date(date.time),
+            name = name,
+            site = site, 
+            rep = rep, 
+            position = position, 
+            meantemp = round(mean(value), 2)) #BIG QUESTION: WHEN SHOULD I ROUND?
+daily.means.df <- distinct(daily.means.df, site, rep, position, date, .keep_all = TRUE)
+daily.means.df$`date(date.time)` <- NULL
 
-
+view(daily.means.df)
 ```
 
