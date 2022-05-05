@@ -34,6 +34,9 @@ START <- as.POSIXlt("2020-10-01 00:00:00", tz = "")
 #RESUME <- as.POSIXlt("2020-09-30", tz = "")
 END <- as.POSIXlt("2021-10-01 00:00:00", tz = "")
 
+data[is.na(data$value),] %>% 
+  print()
+
 data <- data %>% 
   subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
   filter(!is.na(value))  # Apply filter & !is.na
