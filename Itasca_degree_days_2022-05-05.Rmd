@@ -7,24 +7,53 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(stringr)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(zoo)
+
+
 ```
 
-## R Markdown
+## Data setup
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r data setup}
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+data <- read.csv("ALL.csv")
+
+data$date.time <- data$date.time %>% as.POSIXlt(tz = "") #set date/time class to POSIXlt for greater ease in parsing date elements.
+head(data$date.time)
+
+# -- subset by date, add week-counting columns, calculate weekly means --
+
+START <- as.POSIXlt("2020-10-01 00:00:00", tz = "")
+#BREAK <- as.POSIXlt("2020-08-25", tz = "")
+#RESUME <- as.POSIXlt("2020-09-30", tz = "")
+END <- as.POSIXlt("2021-10-01 00:00:00", tz = "")
+
+data <- data %>% 
+  subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
+  filter(!is.na(value))  # Apply filter & !is.na
+
+# WEEKLY.MEANS.DF STARTING AT "data"
+weekly.means.df <- data %>%
+  group_by(site, rep, position) %>% 
+  mutate(length = length(date.time)) %>% 
+  filter(length > 500)
+
+
 ```
 
 ## Including Plots
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r two}
+
+
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
