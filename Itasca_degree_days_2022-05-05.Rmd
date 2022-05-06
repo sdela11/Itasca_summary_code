@@ -21,6 +21,7 @@ library(zoo)
 
 ```{r data setup}
 
+## TEMPORARILY SET WORKING DIRECTORY TO "Itasca_project_19-21" !!!! ##
 
 data <- read.csv("ALL.csv")
 
@@ -62,9 +63,25 @@ daily.means.df <- data %>%
             rep = rep, 
             position = position, 
             meantemp = round(mean(value), 2)) #BIG QUESTION: WHEN SHOULD I ROUND?
-daily.means.df <- distinct(daily.means.df, site, rep, position, date, .keep_all = TRUE)
+daily.means.df <- distinct(daily.means.df, site, rep, position, date, .keep_all = TRUE) %>% 
+  ungroup()
 daily.means.df$`date(date.time)` <- NULL
 
 view(daily.means.df)
+```
+```{r}
+
+degree.days.df <- daily.means.df %>% 
+  filter(meantemp > 0) %>% 
+  group_by(site, rep, position) %>% 
+  summarise(site = site,
+            rep = rep,
+            position = position,
+            degree.days = sum(meantemp)) %>% 
+  distinct(site, rep, position, .keep_all = TRUE)
+
+view(degree.days.df)
+
+
 ```
 
