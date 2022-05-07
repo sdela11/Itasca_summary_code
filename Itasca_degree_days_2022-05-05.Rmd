@@ -71,16 +71,32 @@ view(daily.means.df)
 ```
 ```{r}
 
-degree.days.df <- daily.means.df %>% 
-  filter(meantemp > 0) %>% 
-  group_by(site, rep, position) %>% 
-  summarise(site = site,
-            rep = rep,
-            position = position,
-            degree.days = sum(meantemp)) %>% 
-  distinct(site, rep, position, .keep_all = TRUE)
+daily.means.df <- daily.means.df %>% 
+  filter(meantemp > 0) 
+#only select days where mean temperature is greater than 0 
 
+DD.df1 <- daily.means.df %>% 
+  group_by(site, rep, position) %>% 
+  summarise(site = site, #keep these columns: site, rep, position
+            rep = rep,
+            position = position, #create degree.days column by outputting the sum of meantemp for each position. (Not sensor, but position)
+            degree.days = sum(meantemp))
+  
+DD.df2 <- daily.means.df %>% 
+  group_by(site, rep, position, my(date)) %>% #may need to change the grouping to include a year element
+    distinct(site, rep, position, .keep_all = TRUE) #remove duplicate rows.
+view(DD.df2)
 view(degree.days.df)
+write_csv(degree.days.df, "degree_days_OCT_v1.csv") #write the csv file.
+
+
+```
+
+```{r}
+#Change to factors
+cols <- c("site", "rep", "position")
+degree.days.df[cols] <- lapply(degree.days.df[cols], factor)
+
 
 
 ```
