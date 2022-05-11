@@ -1,0 +1,32 @@
+---
+title: "AUC_degree_day_trials"
+author: "Sara DeLaurentis"
+date: "5/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+
+```
+
+## 
+
+
+
+
+```{r one}
+
+
+
+
+```
+
+## 
+
+```{r }
+
+
+
+
+```
