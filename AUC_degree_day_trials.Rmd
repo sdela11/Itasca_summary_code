@@ -85,12 +85,15 @@ AUC <- sum(diff(date.time)*rollmean(value,2))
 
 ## 
 
-```{r }
+```{r data setup mess it up}
 
 data <- read.csv("Copy_C2A_R0_air_i106_2021.csv")
 
-data$date.time <- data$date.time %>% as.POSIXlt(format = "    ",tz = "") #set date/time class to POSIXlt for greater ease in parsing date elements.
+data$date.time <- mdy_hms(data$date.time, tz = "America/Chicago", truncated = 3) #Get R to recognize your current date format
+  data$date.time <- as.POSIXlt((round(data$date.time, "mins")), tz = "America/Chicago") #Round off the seconds 
+
 head(data$date.time) 
+class(data$date.time)
 
 # -- subset by date, add week-counting columns, calculate weekly means --
 
@@ -99,19 +102,38 @@ START <- as.POSIXlt("2020-10-01 00:00:00", tz = "") #trying the october 1-yr set
 #RESUME <- as.POSIXlt("2020-09-30", tz = "")
 END <- as.POSIXlt("2021-10-01 00:00:00", tz = "")
 
-data[is.na(data$value),] %>% #there should be a handful of NA's present if you're working with the right version of .csv files.
+data[is.na(data$value),] %>% #there should be a handful of NA's present if you're working with the right version of ALL.csv.
   print()
 
 data <- data %>% 
-  subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
-  filter(!is.na(value))  # Apply filter & !is.na
+  subset.data.frame(date.time >= START & date.time <= END)  #subset the whole df                         
+  
 
-# remove partial datasets for the given window. Anything with less than 500 values gets removed.
+# remove partial datasets for the given window. Anything with less than 500 values gets removed. 
+# not needed for this subset I'm working on
 data <- data %>%
   group_by(site, rep, position) %>% 
   mutate(length = length(date.time)) %>% 
   filter(length > 500)
 
+data[data$value <= 0, ] <- NA
+view(data)
 
+str(data)
 
 ```
+
+
+
+```{r first try}
+
+#Best first guess:
+
+AUC.mat <- diff(data$date.time)*rollmean(data$value,2)
+
+AUC <- sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE) #make sure to set na.rm = TRUE to remove NA values.
+view(AUC.mat)
+AUC
+
+```
+
