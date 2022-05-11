@@ -98,21 +98,33 @@ view(DD.df2)
 DD.df2 <- DD.df2 %>% 
   pivot_wider(names_from = year.mon, values_from = month.GDD) #puts year.mon into their own columns
 
-degree.days.df <- left_join(DD.df1, DD.df2)
+degree.days.dfW <- left_join(DD.df1, DD.df2)
 
-view(degree.days.df)
+view(degree.days.dfW)
 
-write_csv(degree.days.df, "degree_days_OCT_v2.csv") #write the csv file.
+write_csv(degree.days.dfW, "degree_days_OCT_v2.csv") #write the csv file.
 
 ```
 
-```{r}
+```{r plots}
+
+#pivot to long? Not sure if needed
+
 
 #Change to factors
 cols <- c("site", "rep", "position")
-degree.days.df[cols] <- lapply(degree.days.df[cols], factor)
+degree.days.dfW[cols] <- lapply(degree.days.df[cols], factor)
 
 
+
+myplot <- ggplot(data = degree.days.dfW, aes(x = position, y = degree.days, color = site)) +
+      geom_point() +
+ # facet_wrap(~position, ncol = 2)
+      labs(title = "Growing Degree Days by Site",
+           subtitle = "Date Range: October 1, 2020 - September 30, 2021",
+           y = "GDD, accumulated mean temperature",
+           x = "Site") + theme_bw(base_size = 15)
+      print(myplot)
 
 ```
 
