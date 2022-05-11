@@ -24,8 +24,10 @@ library(zoo)
 
 data <- read.csv("ALL.csv")
 
+head(data)
+
 data$date.time <- data$date.time %>% as.POSIXlt(tz = "") #set date/time class to POSIXlt for greater ease in parsing date elements.
-head(data$date.time)
+head(data$date.time) 
 
 # -- subset by date, add week-counting columns, calculate weekly means --
 
@@ -74,6 +76,10 @@ print(AUC)
 ?rollmean
 
 
+#Best first guess:
+
+AUC <- sum(diff(date.time)*rollmean(value,2))
+
 
 ```
 
@@ -81,6 +87,30 @@ print(AUC)
 
 ```{r }
 
+data <- read.csv("Copy_C2A_R0_air_i106_2021.csv")
+
+data$date.time <- data$date.time %>% as.POSIXlt(format = "    ",tz = "") #set date/time class to POSIXlt for greater ease in parsing date elements.
+head(data$date.time) 
+
+# -- subset by date, add week-counting columns, calculate weekly means --
+
+START <- as.POSIXlt("2020-10-01 00:00:00", tz = "") #trying the october 1-yr set to see if the code works. 5-5, SD
+#BREAK <- as.POSIXlt("2020-08-25", tz = "")
+#RESUME <- as.POSIXlt("2020-09-30", tz = "")
+END <- as.POSIXlt("2021-10-01 00:00:00", tz = "")
+
+data[is.na(data$value),] %>% #there should be a handful of NA's present if you're working with the right version of .csv files.
+  print()
+
+data <- data %>% 
+  subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
+  filter(!is.na(value))  # Apply filter & !is.na
+
+# remove partial datasets for the given window. Anything with less than 500 values gets removed.
+data <- data %>%
+  group_by(site, rep, position) %>% 
+  mutate(length = length(date.time)) %>% 
+  filter(length > 500)
 
 
 
