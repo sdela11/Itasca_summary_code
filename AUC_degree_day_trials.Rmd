@@ -125,7 +125,11 @@ str(data)
 
 
 
+<<<<<<< HEAD
 ```{r first try}
+=======
+```{r}
+>>>>>>> 572d6d4e7757047a7f5bb305214e37ded64a3805
 
 #Best first guess:
 
