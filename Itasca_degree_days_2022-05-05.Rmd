@@ -53,7 +53,7 @@ data <- data %>%
 
 ## 
 
-```{r two}
+```{r daily means}
 
 daily.means.df <- data %>%
   group_by(site, rep, position, date(date.time)) %>% 
@@ -68,8 +68,11 @@ daily.means.df <- distinct(daily.means.df, site, rep, position, date, .keep_all 
 daily.means.df$`date(date.time)` <- NULL
 
 view(daily.means.df)
+
 ```
-```{r}
+
+
+```{r degree days one}
 
 daily.means.df <- daily.means.df %>% 
   filter(meantemp > 0) 
@@ -80,19 +83,31 @@ DD.df1 <- daily.means.df %>%
   summarise(site = site, #keep these columns: site, rep, position
             rep = rep,
             position = position, #create degree.days column by outputting the sum of meantemp for each position. (Not sensor, but position)
-            degree.days = sum(meantemp))
-  
-DD.df2 <- daily.means.df %>% 
-  group_by(site, rep, position, my(date)) %>% #may need to change the grouping to include a year element
-    distinct(site, rep, position, .keep_all = TRUE) #remove duplicate rows.
-view(DD.df2)
-view(degree.days.df)
-write_csv(degree.days.df, "degree_days_OCT_v1.csv") #write the csv file.
+            degree.days = sum(meantemp)) %>% 
+  distinct(site, rep, position, .keep_all = TRUE) %>% 
+  ungroup()
+view(DD.df1)  
 
+DD.df2 <- daily.means.df %>% 
+  mutate(year.mon = format(as.Date(date), "%Y-%m")) %>% 
+  group_by(site, rep, position, year.mon) %>% 
+  summarize(month.GDD = sum(meantemp)) %>% 
+  ungroup()
+view(DD.df2)
+
+DD.df2 <- DD.df2 %>% 
+  pivot_wider(names_from = year.mon, values_from = month.GDD) #puts year.mon into their own columns
+
+degree.days.df <- left_join(DD.df1, DD.df2)
+
+view(degree.days.df)
+
+write_csv(degree.days.df, "degree_days_OCT_v2.csv") #write the csv file.
 
 ```
 
 ```{r}
+
 #Change to factors
 cols <- c("site", "rep", "position")
 degree.days.df[cols] <- lapply(degree.days.df[cols], factor)
