@@ -51,8 +51,27 @@ data <- data %>%
 ```
 
 
-```{r one}
+```{r AUC trial one}
 
+#  https://stackoverflow.com/questions/4954507/calculate-the-area-under-a-curve
+
+x <- 1:10
+y <- 3*x+25 #y = 3 times x, +25.
+id <- order(x) #an ordered x
+print(id)
+str(id)
+AUC <- sum(diff(x[id])*rollmean(y[id],2)) 
+
+AUC.mat <- c(diff(x[id])*rollmean(y[id],2))
+view(AUC.mat)
+
+#translation: the sum of: the lagged (by 1) difference of x[id] times the mean of the two y values. Here, the difference is only 1. Each polygon is 1 wide by the y-mean high.
+
+#how to adapt this to date.time measurements taken every 4 hours?
+#each polygon is the time difference by the mean between the two temperature points high.
+
+print(AUC)
+?rollmean
 
 
 
