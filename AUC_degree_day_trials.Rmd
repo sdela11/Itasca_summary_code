@@ -116,10 +116,7 @@ data <- data %>%
   mutate(length = length(date.time)) %>% 
   filter(length > 500)
 
-data %>%  ungroup()
-data[data$value <= 0, ] <- NA
 view(data)
-
 str(data)
 
 ```
@@ -130,7 +127,7 @@ str(data)
 ```{r first try}
 
 #Best first guess:
-
+#5/11/2022: it worked with the test data!
 AUC.mat <- diff(data$date.time)*rollmean(data$value,2)
 
 AUC <- sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE) #make sure to set na.rm = TRUE to remove NA values.
@@ -139,20 +136,21 @@ AUC
 
 ```
 
-#Now, move this to the entirety of ALL.csv
+##Now, move this to the entirety of ALL.csv
+
 ```{r}
 
 #set entire row to NA if <= 0 or NA in value column
 #check to see if it worked.
 #   for the Oct 2020-Sept 2021 dataset, it's 40.5K out of 206.2k total rows.
 head(data)
-degree.hours <- data %>%  ungroup()
-str(degree.hours)
-degree.hours[degree.hours$value <= 0 | is.na(degree.hours$value),] <- NA  
-num.nanas <- degree.hours[is.na(degree.hours$date.time),]
+temps.df <- data %>%  ungroup()
+str(temps.df)
+temps.df[temps.df$value <= 0 | is.na(temps.df$value),] <- NA  
+num.nanas <- temps.df[is.na(temps.df$date.time),]
 print(length(c(num.nanas$date.time))) 
 
-# WARNING: Time-intensive calculations below!!!
+# WARNING: Potentially Time-intensive calculations below!!!
 
 #summarise after grouping by site, rep, position.
 #keep these columns: site, rep, position
@@ -160,7 +158,7 @@ print(length(c(num.nanas$date.time)))
 #only keep rows with distinct value for site, rep, position. Remove all others.
 #5/12: currently having problems with this code. Output gives positive and negative values.
 
-degree.hours <- degree.hours %>%   
+degree.hr.df <- temps.df %>%   
   group_by(site, rep, position) %>% 
   summarise(site = site, 
             rep = rep,
@@ -168,14 +166,14 @@ degree.hours <- degree.hours %>%
             degree.hours = sum(abs(diff(hour(date.time)))*rollmean(value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
-degree.hours$degree.days <- degree.hours$degree.hours / 24
+degree.hr.df$degree.days <- degree.hr.df$degree.hours / 24
 
-view(degree.hours)
-str(degree.hours)
-write_csv(degree.hours, file = "AUC_degree_hours_prelim.csv" )
+view(degree.hr.df)
+str(degree.hr.df)
+write_csv(degree.hr.df, file = "AUC_degree_hours_prelim.csv" )
 
 
-DD.df2 <- daily.means.df %>% 
+DD.df2 <- temps.df %>% 
   mutate(year.mon = format(as.Date(date), "%Y-%m")) %>% 
   group_by(site, rep, position, year.mon) %>% 
   summarize(month.GDD = sum(meantemp)) %>% 
