@@ -168,11 +168,11 @@ degree.hours <- degree.hours %>%
             degree.hours = sum(abs(diff(hour(date.time)))*rollmean(value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
+degree.hours$degree.days <- degree.hours$degree.hours / 24
+
 view(degree.hours)
 str(degree.hours)
 write_csv(degree.hours, file = "AUC_degree_hours_prelim.csv" )
-
-degree.hours$degree.hours %>% formatC(format = "e", digits = 4)
 
 
 DD.df2 <- daily.means.df %>% 
