@@ -145,7 +145,7 @@ AUC
 #set entire row to NA if <= 0 or NA in value column
 #check to see if it worked.
 #   for the Oct 2020-Sept 2021 dataset, it's 40.5K out of 206.2k total rows.
-
+head(data)
 degree.hours <- data %>%  ungroup()
 str(degree.hours)
 degree.hours[degree.hours$value <= 0 | is.na(degree.hours$value),] <- NA  
@@ -158,17 +158,19 @@ print(length(c(num.nanas$date.time)))
 #keep these columns: site, rep, position
 #  create degree.days column by outputting the sum of all polygons for each position. (Not sensor, but position)
 #only keep rows with distinct value for site, rep, position. Remove all others.
-#5/12: currently having problems with this code. Output is not working properly, at least not in the view window.
+#5/12: currently having problems with this code. Output gives positive and negative values.
 
 degree.hours <- degree.hours %>%   
   group_by(site, rep, position) %>% 
   summarise(site = site, 
             rep = rep,
             position = position, 
-            degree.hours = sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE)) %>% 
+            degree.hours = sum(diff(hour(date.time))*rollmean(value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
-#view(degree.hours)
+view(degree.hours)
+str(degree.hours)
+write_csv(degree.hours, file = "AUC_degree_hours_prelim.csv", )
 
 degree.hours$degree.hours %>% formatC(format = "e", digits = 4)
 
