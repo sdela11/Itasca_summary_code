@@ -40,8 +40,8 @@ data[is.na(data$value),] %>% #there should be a handful of NA's present if you'r
   print()
 
 data <- data %>% 
-  subset.data.frame(date.time >= START & date.time <= END) %>% #subset the whole df                         
-  filter(!is.na(value))  # Apply filter & !is.na
+  subset.data.frame(date.time >= START & date.time <= END) #subset the whole df                         
+    # Apply filter & !is.na
 
 # remove partial datasets for the given window. Anything with less than 500 values gets removed.
 data <- data %>%
@@ -116,6 +116,7 @@ data <- data %>%
   mutate(length = length(date.time)) %>% 
   filter(length > 500)
 
+data %>%  ungroup()
 data[data$value <= 0, ] <- NA
 view(data)
 
@@ -125,11 +126,8 @@ str(data)
 
 
 
-<<<<<<< HEAD
+
 ```{r first try}
-=======
-```{r}
->>>>>>> 572d6d4e7757047a7f5bb305214e37ded64a3805
 
 #Best first guess:
 
@@ -138,6 +136,52 @@ AUC.mat <- diff(data$date.time)*rollmean(data$value,2)
 AUC <- sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE) #make sure to set na.rm = TRUE to remove NA values.
 view(AUC.mat)
 AUC
+
+```
+
+#Now, move this to the entirety of ALL.csv
+```{r}
+
+degree.hours <- data %>%  ungroup()
+str(degree.hours)
+degree.hours[degree.hours$value <= 0 | is.na(degree.hours$value),] <- NA
+
+#check to see if it worked:
+no.nanas <- degree.hours[is.na(degree.hours$date.time),]
+print(length(c(no.nanas$date.time)))
+
+
+degree.hours <- degree.hours %>%   
+  group_by(site, rep, position) %>% 
+  summarise(site = site, #keep these columns: site, rep, position
+            rep = rep,
+            position = position, #create degree.days column by outputting the sum of meantemp for each position. (Not sensor, but position)
+            degree.hours = sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE)) %>% 
+  distinct(site, rep, position, .keep_all = TRUE) %>% 
+  ungroup()
+#view(degree.hours)
+
+degree.hours$degree.hours %>% formatC(format = "e", digits = 4)
+
+
+DD.df2 <- daily.means.df %>% 
+  mutate(year.mon = format(as.Date(date), "%Y-%m")) %>% 
+  group_by(site, rep, position, year.mon) %>% 
+  summarize(month.GDD = sum(meantemp)) %>% 
+  ungroup()
+view(DD.df2)
+
+DD.df2 <- DD.df2 %>% 
+  pivot_wider(names_from = year.mon, values_from = month.GDD) #puts year.mon into their own columns
+
+degree.days.dfW <- left_join(DD.df1, DD.df2)
+
+view(degree.days.dfW)
+
+write_csv(degree.days.dfW, "degree_days_OCT_v2.csv") #write the csv file.
+
+
+
 
 ```
 
