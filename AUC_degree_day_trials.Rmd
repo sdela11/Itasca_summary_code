@@ -158,7 +158,7 @@ print(length(c(num.nanas$date.time)))
 #only keep rows with distinct value for site, rep, position. Remove all others.
 #5/12: currently having problems with this code. Output gives positive and negative values.
 
-degree.hr.df <- temps.df %>%   
+DH.df1 <- temps.df %>%   
   group_by(site, rep, position) %>% 
   summarise(site = site, 
             rep = rep,
@@ -166,28 +166,33 @@ degree.hr.df <- temps.df %>%
             degree.hours = sum(abs(diff(hour(date.time)))*rollmean(value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
-degree.hr.df$degree.days <- degree.hr.df$degree.hours / 24
+DH.df1$degree.days <- DH.df1$degree.hours / 24
 
-view(degree.hr.df)
-str(degree.hr.df)
-write_csv(degree.hr.df, file = "AUC_degree_hours_prelim.csv" )
+view(DH.df1)
+str(DH.df1)
+write_csv(DH.df1, file = "AUC_degree_hours_prelim.csv" )
 
 
-DD.df2 <- temps.df %>% 
-  mutate(year.mon = format(as.Date(date), "%Y-%m")) %>% 
+#setting up the monthly grouping dataframe
+
+DH.df2 <- temps.df %>% 
+  mutate(year.mon = format(as.POSIXlt(date.time), "%Y-%m")) %>% 
   group_by(site, rep, position, year.mon) %>% 
-  summarize(month.GDD = sum(meantemp)) %>% 
+  summarize(month.DH = sum(abs(diff(hour(date.time)))*rollmean(value,2), na.rm = TRUE)) %>% 
   ungroup()
-view(DD.df2)
+DH.df2$month.DD <- signif(DH.df2$month.DH / 24, 3) %>%
+  format(digits = 2, scientific = FALSE)
+args(signif)
+view(DH.df2)
 
-DD.df2 <- DD.df2 %>% 
-  pivot_wider(names_from = year.mon, values_from = month.GDD) #puts year.mon into their own columns
+DH.df2 <- DH.df2 %>% 
+  pivot_wider(names_from = year.mon, values_from = c(month.DH, month.DD)) #puts year.mon into their own columns
 
-degree.days.dfW <- left_join(DD.df1, DD.df2)
+degree.hours.dfW <- left_join(DH.df1, DH.df2)
 
-view(degree.days.dfW)
+view(degree.hours.dfW)
 
-write_csv(degree.days.dfW, "degree_days_OCT_v2.csv") #write the csv file.
+write_csv(degree.hours.dfW, "degree_hours_OCT_v1.csv") #write the csv file.
 
 
 
