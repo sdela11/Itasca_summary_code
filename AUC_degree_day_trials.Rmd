@@ -147,8 +147,8 @@ str(degree.hours)
 degree.hours[degree.hours$value <= 0 | is.na(degree.hours$value),] <- NA
 
 #check to see if it worked:
-no.nanas <- degree.hours[is.na(degree.hours$date.time),]
-print(length(c(no.nanas$date.time)))
+num.nanas <- degree.hours[is.na(degree.hours$date.time),]
+print(length(c(num.nanas$date.time)))
 
 
 degree.hours <- degree.hours %>%   
