@@ -142,20 +142,29 @@ AUC
 #Now, move this to the entirety of ALL.csv
 ```{r}
 
+#set entire row to NA if <= 0 or NA in value column
+#check to see if it worked.
+#   for the Oct 2020-Sept 2021 dataset, it's 40.5K out of 206.2k total rows.
+
 degree.hours <- data %>%  ungroup()
 str(degree.hours)
-degree.hours[degree.hours$value <= 0 | is.na(degree.hours$value),] <- NA
-
-#check to see if it worked:
+degree.hours[degree.hours$value <= 0 | is.na(degree.hours$value),] <- NA  
 num.nanas <- degree.hours[is.na(degree.hours$date.time),]
-print(length(c(num.nanas$date.time)))
+print(length(c(num.nanas$date.time))) 
 
+# WARNING: Time-intensive calculations below!!!
+
+#summarise after grouping by site, rep, position.
+#keep these columns: site, rep, position
+#  create degree.days column by outputting the sum of all polygons for each position. (Not sensor, but position)
+#only keep rows with distinct value for site, rep, position. Remove all others.
+#5/12: currently having problems with this code. Output is not working properly, at least not in the view window.
 
 degree.hours <- degree.hours %>%   
   group_by(site, rep, position) %>% 
-  summarise(site = site, #keep these columns: site, rep, position
+  summarise(site = site, 
             rep = rep,
-            position = position, #create degree.days column by outputting the sum of meantemp for each position. (Not sensor, but position)
+            position = position, 
             degree.hours = sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
