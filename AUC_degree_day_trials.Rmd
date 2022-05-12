@@ -165,12 +165,12 @@ degree.hours <- degree.hours %>%
   summarise(site = site, 
             rep = rep,
             position = position, 
-            degree.hours = sum(diff(hour(date.time))*rollmean(value,2), na.rm = TRUE)) %>% 
+            degree.hours = sum(abs(diff(hour(date.time)))*rollmean(value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
 view(degree.hours)
 str(degree.hours)
-write_csv(degree.hours, file = "AUC_degree_hours_prelim.csv", )
+write_csv(degree.hours, file = "AUC_degree_hours_prelim.csv" )
 
 degree.hours$degree.hours %>% formatC(format = "e", digits = 4)
 
