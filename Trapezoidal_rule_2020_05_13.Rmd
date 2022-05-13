@@ -77,3 +77,93 @@ trapezoid <- function(f, a, b) {
 
 ```
 
+
+
+```{r function three}
+
+f3 <- function(x) {
+  return(exp(2 * x) * sin(3 * x))
+}
+
+
+## VISUALIZATION OF COMPOSITE TRAPEZOID ESTIMATION
+
+# Break the interval into n subintervals
+seg <- seq.int(0, 2, length.out = 9)
+
+# Initialize an empty vector to store function outputs
+fx <- vector(length = length(seg))
+
+# For each subinterval, calculate the function
+for (i in 1:length(seg)) {
+  fx[i] <- f3(seg[i])
+}
+
+# Collect the needed points into a data.frame
+df <- data.frame(xend = seg, 
+                 y = rep(0, 9), 
+                 yend = fx, 
+                 yend1 = c(fx[2:9], fx[9]), 
+                 xend1 = c(seg[2:9], seg[9]))
+
+# plot the function and its approximation
+ggplot(data = df) + 
+  stat_function(fun = f3, size = 1.05, alpha = 0.75, color='blue') + 
+  geom_segment(aes(x=xend, y=y, xend=xend, yend=yend)) + 
+  geom_segment(aes(x=xend, y=yend, xend=xend1, yend=yend1)) + 
+  geom_ribbon(aes(x=xend, ymin=y, ymax=yend), fill = 'blue', alpha = 0.3) + 
+  geom_area(stat = 'function', fun = f3, fill = 'black', alpha = 0.3, xlim = c(0, 2)) + 
+  xlim(c(-0.5, 2))
+
+
+
+```
+
+```{r comp trap}
+
+#inputs: f = function, a = lower limit, b = upper limit, n = number of divisions
+# from above:
+#f <- function(x) {
+#  return(x * sin(x))
+#}
+
+#As a refresher: the formula for the area of a trapezoid:
+# A = 1/2h(b1 + b2). Or A = ((a+b)/2)h
+# In our formula, the 1/2 * h becomes a constant that is distributed to the other terms (h / 2)
+
+composite.trapezoid <- function(f, a, b, n) {
+  if (is.function(f) == FALSE) {
+    stop('f must be a function with one parameter (variable)') #I think this is a way to output an error message
+  }
+  
+  h <- (b - a) / n #h = height of a single trapezoid on it's side.
+  
+  j <- 1:n - 1  #j = integer sequence from 1:n-1
+
+  xj <- a + j * h #xj = variable given by: lower limit plus (lower limit + # of traps - 1) times h
+
+  approx <- (h / 2) * (f(a) + (2 * sum(f(xj)) + f(b) ) )#    height divided by 2 (constant) * ( (y value at a))  +PLUS+
+  # 2 times the (sum of y values at xj) +PLUS+  y values at b)
+  
+  return(approx)
+}
+
+composite.trapezoid(f3, 0, 2, 8)
+
+
+```
+```{r}
+x <- 1:10
+y <- rnorm(10)
+f <- approxfun(x, y)
+curve(f(x), 0, 11, col = "green2")
+points(x, y)
+is.function(fc <- approxfun(x, y, method = "const")) # TRUE
+curve(fc(x), 0, 10, col = "darkblue", add = TRUE)
+## different extrapolation on left and right side :
+plot(approxfun(x, y, rule = 2:1), 0, 11,
+     col = "tomato", add = TRUE, lty = 3, lwd = 2)
+
+
+```
+
