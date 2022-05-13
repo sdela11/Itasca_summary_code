@@ -198,4 +198,34 @@ write_csv(degree.hours.dfW, "degree_hours_OCT_v1.csv") #write the csv file.
 
 
 ```
+```{r ideas.one}
+
+t <- c(seq.Date(as.Date("2020-05-04"), as.Date("2020-05-14"),1))
+print(t)
+#r <- sample(-5:20,length(t), replace = FALSE) 
+print(r)
+r <- r #use this line when you have a good set of values.
+
+df <- as.data.frame(cbind(r,t))
+df$t <- as.Date(df$t)
+print(df)
+
+
+temp.FUN <- function(t){
+  data <- df
+  sapply(df, function(t){
+    value <- df[df$t == t,"r"]
+    return(value)
+  }
+  )
+  
+}
+
+temp.FUN("2020-05-04")
+temp.FUN("2020-05-12")
+
+integrate(temp.FUN, as.Date("2020-05-04"), as.Date("2020-05-14"), subdivisions = (length(t)-1))
+p <- integrate(temp.FUN, as.Date("2020-05-04"), as.Date("2020-05-14"), subdivisions = (length(t)-1))
+
+```
 
