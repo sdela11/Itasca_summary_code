@@ -1,0 +1,32 @@
+---
+title: "Trapezoidal_rule_2020_05_13"
+author: "Sara DeLaurentis"
+date: "5/13/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+
+
+
+```
+
+##
+
+```{r }
+
+
+
+
+
+```
+
+## 
+
+```{r }
+
+
+
+```
+
