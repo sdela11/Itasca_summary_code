@@ -8,15 +8,34 @@ output: html_document
 ```{r setup, include=FALSE}
 
 
-
+library(stringr)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(zoo)
 
 ```
 
 ##
+From:
+https://www.r-bloggers.com/2017/08/the-trapezoidal-rule-of-numerical-integration-in-r/
+Accessed: 2022-05-13, 14:25
 
-```{r }
+```{r trap example one}
 
-
+f <- function(x) {
+  return(x * sin(x))
+}
+# Create a data frame to store all the points needed for the approximation trapezoid
+df <- data.frame(cbind(c(0, pi/4, pi/4, 0), c(0, f(pi/4), 0, 0)))
+# Plot the function and its approximation by the trapezoidal rule
+ggplot(data = data.frame(x = 0), mapping = aes(x = x)) + 
+  stat_function(fun = f, size = 1.05, alpha = 0.75, color='blue') + 
+  geom_segment(aes(x = 0, y = 0, xend = pi/4, yend = f(pi/4))) + 
+  geom_segment(aes(x = pi/4, y = 0, xend = pi/4, yend = f(pi/4))) + 
+  geom_polygon(data = df, aes(x=X1, y=X2), fill = 'blue', alpha = 0.2) + 
+  geom_area(stat = 'function', fun = f, fill = 'black', alpha = 0.3, xlim = c(0, pi/4)) + 
+  xlim(c(-0.5,1))
 
 
 
@@ -24,8 +43,36 @@ output: html_document
 
 ## 
 
-```{r }
+```{r trap example two}
 
+
+f2 <- function(x) {
+  return(x^2 * exp(-x))
+}
+df <- data.frame(cbind(c(0, 1, 1, 0), c(0, f2(1), 0, 0)))
+ggplot(data = data.frame(x = 0), mapping = aes(x = x)) + 
+  stat_function(fun = f2, size = 1.05, alpha = 0.75, color='blue') + 
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = f2(1))) + 
+  geom_segment(aes(x = 1, y = 0, xend = 1, yend = f2(1))) + 
+  geom_polygon(data = df, aes(x=X1, y=X2), fill = 'blue', alpha = 0.2) + 
+  geom_area(stat = 'function', fun = f2, fill = 'black', alpha = 0.3, xlim = c(0, 1)) + 
+  xlim(c(0,1))
+
+
+```
+```{r trap example three}
+
+trapezoid <- function(f, a, b) {
+  if (is.function(f) == FALSE) {
+    stop('f must be a function with one parameter (variable)')
+  }
+  
+  h <- b - a
+  
+  fxdx <- (h / 2) * (f(a) + f(b))
+  
+  return(fxdx)
+}
 
 
 ```
