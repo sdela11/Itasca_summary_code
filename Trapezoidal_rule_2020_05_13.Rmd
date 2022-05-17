@@ -119,6 +119,8 @@ ggplot(data = df) +
 
 ```
 
+
+
 ```{r comp trap}
 
 #inputs: f = function, a = lower limit, b = upper limit, n = number of divisions
@@ -152,7 +154,7 @@ composite.trapezoid(f3, 0, 2, 8)
 
 
 ```
-```{r}
+```{r interpolation example}
 x <- 1:10
 y <- rnorm(10)
 f <- approxfun(x, y)
@@ -163,6 +165,14 @@ curve(fc(x), 0, 10, col = "darkblue", add = TRUE)
 ## different extrapolation on left and right side :
 plot(approxfun(x, y, rule = 2:1), 0, 11,
      col = "tomato", add = TRUE, lty = 3, lwd = 2)
+
+
+```
+
+
+```{r}
+
+
 
 
 ```
