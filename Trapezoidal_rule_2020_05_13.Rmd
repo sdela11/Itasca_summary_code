@@ -155,6 +155,7 @@ composite.trapezoid(f3, 0, 2, 8)
 
 ```
 ```{r interpolation example}
+
 x <- 1:10
 y <- rnorm(10)
 f <- approxfun(x, y)
@@ -169,8 +170,77 @@ plot(approxfun(x, y, rule = 2:1), 0, 11,
 
 ```
 
+## Code ideas: 
+Modified from this Star Strider post on 21 Nov 2019:
+Original code is for use in MATlab
+
+[remove negative area](https://www.mathworks.com/matlabcentral/answers/492268-area-between-curve-numerical-data-with-positive-and-negative-values-and-y-0)
+
+The general idea:
+Separate out the values greater than 0. Calculate the areas separately. An additional note is to use interpolation to gain more precision with polygons defined by consecutive values with different signs. (crosses x-axis).
 
 ```{r}
+
+x = c(0:100)
+y = rnorm(101)
+gt0 <- y[y>0]
+print(gt0)
+
+posArea = trapz(x(gt0), y(gt0));                       # % Area > 0
+negArea = trapz(x(~gt0), y(~gt0));                     # % Area < 0
+
+#I've already done the first part of separating the above-zero data and below-zero data using filter (See AUC_degree_day_trials.Rmd)
+
+#Adding an interpolation part:
+
+x <- order(1:100)
+y <- sample(-22:40, 100, replace = TRUE)
+length(x)
+length(y)
+
+df <- as.data.frame(cbind(x,y))
+
+
+
+df$lead.y <- lead(df$y)
+view(df)
+
+FUN1 <- function(df){
+  
+  z.ct <- 0
+  
+  for(i in (1:nrow(df))){
+    
+    if(!is.na(df[i]$lead.y) & (df[i]$y * df[i]$lead.y < 0)){
+  
+  z.ct <- z.ct + 1
+  print(z.ct)
+}
+}
+}
+
+sapply(seq_along(df), function(i){
+  
+  z.ct <- 0
+    
+    if(!is.na(df[[i]]$lead.y) & (df[[i]]$y * df[[i]]$lead.y < 0)){
+  
+  z.ct <- z.ct + 1
+  print(z.ct)
+}
+  }
+)
+
+  
+FUN1(df)
+
+#FUN1(df)
+lapply(df, FUN1)
+
+pwalk(df, FUN1)
+
+args(lapply)
+#interp.FUN <- approx(x,y, xout = c(___))
 
 
 
