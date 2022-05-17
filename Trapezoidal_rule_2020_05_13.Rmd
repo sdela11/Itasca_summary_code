@@ -199,11 +199,9 @@ length(x)
 length(y)
 
 df <- as.data.frame(cbind(x,y))
-
-
-
 df$lead.y <- lead(df$y)
 view(df)
+
 
 FUN1 <- function(df){
   
@@ -219,18 +217,29 @@ FUN1 <- function(df){
 }
 }
 
-sapply(seq_along(df), function(i){
+
+df.l <- list()  # Create empty list
+
+for(i in 1:nrow(df)) {   #for(each variable in the sequence "1 through the number of rows in df"):
+                          
+  df.l[[i]] <- df[i , ]  #create an element in files.meta.list from each row found in data.list.df
+}
+head(df.l)
   
-  z.ct <- 0
-    
-    if(!is.na(df[[i]]$lead.y) & (df[[i]]$y * df[[i]]$lead.y < 0)){
+
+FUN1 
+
+z.ct <- 0
+sapply(seq_along(df.l), function(i){
+  
+    if(!is.na(df.l[[i]]$lead.y) & (df.l[[i]]$y * df.l[[i]]$lead.y < 0)){
   
   z.ct <- z.ct + 1
   print(z.ct)
 }
   }
 )
-
+#5/17: this kinda works but there's a problem with the counter. I think it needs to be outside the loop. I also don't want to use lists. I think the easiest thing is to just create another column with a lead(y) value.
   
 FUN1(df)
 
@@ -243,7 +252,17 @@ args(lapply)
 #interp.FUN <- approx(x,y, xout = c(___))
 
 
+##Completely new approach!!!
 
+
+df 
+df$detect <- as.logical((df$y * df$lead.y) < 0)
+sum(df$detect, na.rm = TRUE)
+
+triangles <- df[df$detect == "TRUE",]
+
+
+##that was a billion times easier.
 
 ```
 
