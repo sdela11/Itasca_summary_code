@@ -128,7 +128,7 @@ str(data)
 
 #Best first guess:
 #5/11/2022: it worked with the test data!
-AUC.mat <- diff(data$date.time)*rollmean(data$value,2)
+AUC.mat <- diff(data$date.time)*rollmean(data$value,2) #create a matrix with the calculations
 
 AUC <- sum(diff(data$date.time)*rollmean(data$value,2), na.rm = TRUE) #make sure to set na.rm = TRUE to remove NA values.
 view(AUC.mat)
@@ -141,6 +141,8 @@ AUC
 ```{r}
 
 #set entire row to NA if <= 0 or NA in value column
+
+
 #check to see if it worked.
 #   for the Oct 2020-Sept 2021 dataset, it's 40.5K out of 206.2k total rows.
 head(data)
@@ -158,7 +160,9 @@ print(length(c(num.nanas$date.time)))
 #only keep rows with distinct value for site, rep, position. Remove all others.
 #5/12: currently having problems with this code. Output gives positive and negative values.
 
-DH.df1 <- temps.df %>%   
+
+DH.df1 <- temps.df %>%   #Degree-hours dataframe #1: maintain metadata columns: site, rep, position, and 
+  #calculate degree hours by taking the absolute value of the product: difference in hours(date.time)*mean of the temperature at the two x-coordinates.
   group_by(site, rep, position) %>% 
   summarise(site = site, 
             rep = rep,
@@ -166,14 +170,14 @@ DH.df1 <- temps.df %>%
             degree.hours = sum(abs(diff(hour(date.time)))*rollmean(value,2), na.rm = TRUE)) %>% 
   distinct(site, rep, position, .keep_all = TRUE) %>% 
   ungroup()
-DH.df1$degree.days <- DH.df1$degree.hours / 24
+DH.df1$degree.days <- DH.df1$degree.hours / 24 #add a column calculating degree days by dividing by 24.
 
 view(DH.df1)
 str(DH.df1)
 write_csv(DH.df1, file = "AUC_degree_hours_prelim.csv" )
 
 
-#setting up the monthly grouping dataframe
+#setting up the monthly grouping dataframe. Same thing as above, but don't keep metadata, and group by month first. pivot_wider puts each year.mon into their own columns instead of keeping it long-wise.
 
 DH.df2 <- temps.df %>% 
   mutate(year.mon = format(as.POSIXlt(date.time), "%Y-%m")) %>% 
@@ -199,6 +203,8 @@ write_csv(degree.hours.dfW, "degree_hours_OCT_v1.csv") #write the csv file.
 
 ```
 ```{r ideas.one}
+
+#Trying to assign my dataset as a function in order to integrate. Abandoned for better method for now.
 
 t <- c(seq.Date(as.Date("2020-05-04"), as.Date("2020-05-14"),1))
 print(t)
