@@ -42,17 +42,21 @@ data.2.4
 
 triangle.FUN <- function(data){
   return(str(data))
-  
-  if(data[data$"switch" == "TRUE",]){
-    return("it works")
+  with(data, if(switch == "TRUE"){
+    print("it works")
     #linex <- lm(y~x, data.2.4)
-  }
+  })
 }
   
 triangle.FUN(data.2.4)
+
+data.2.4$coef <- with(data.2.4, if(data.2.4["switch" == "TRUE"]){
+  print("it worked")
+})
+
 #potential strengths with this method:
  #All points can be ordered by date/time after they are appended.
-
+?with
 #problems to solve:
  #turning date format into x-coordinate
  #create an if statement to process these, drawing in the previous and next columns.
