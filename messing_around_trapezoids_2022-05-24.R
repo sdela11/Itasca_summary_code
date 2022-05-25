@@ -20,8 +20,8 @@ data <- matrix(c(1,2,5,-2), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c
 #line1 <- line(c(p1,p2))
 #line is from stats package. Is that part of base R? It creates a tukeyline object, and I don't know if it's optimal for my use.
 
-plot(data)
-segments(1,5, x1=2, y1=-2)
+#plot(data)
+#segments(1,5, x1=2, y1=-2)
 
 line2 <- lm(y~x, as.data.frame(data))
 summary(line2)
@@ -30,13 +30,10 @@ co <- coef(line2)
 int <- co["(Intercept)"]
 slope <- co["x"]
 
-x <- (-slope)/int
-x
-nupoint <- c(x, y = 0)
-nupoint
-
-out <- rbind(data, nupoint)
-out
+x <- (-slope)/int #this is how we solve for x when y = 0
+nupoint <- c(x, y = 0) #create new datapoint
+extras.df <- rbind(data, nupoint) #append the new datapoint
+extras.df[order(rownames(extras.df)),] #re-order the dataframe
 
 #y = mx + b
 
@@ -45,16 +42,4 @@ out
 
 #-int/co = x
 #create point: xy.coords(-int/co, y = 0)
-
-
-solve()
-
-str(line1)
-plot(line1)
-
-#example from help file:
-ff <- stats::fft(1:9)
-xy.coords(ff)
-xy.coords(ff, xlab = "fft") # labels "Re(fft)",  "Im(fft)"
-
 
