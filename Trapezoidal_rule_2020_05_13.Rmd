@@ -154,6 +154,8 @@ composite.trapezoid(f3, 0, 2, 8)
 
 
 ```
+
+
 ```{r interpolation example}
 
 x <- 1:10
@@ -199,7 +201,7 @@ length(x)
 length(y)
 
 df <- as.data.frame(cbind(x,y))
-df$lead.y <- lead(df$y)
+df$lead.y <- lead(df$y) #create a column of y-values, one value ahead.
 view(df)
 
 

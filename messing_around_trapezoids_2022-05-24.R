@@ -12,7 +12,8 @@ library(lubridate)
 
 
 #create simple matrix, 2x2 or 2x4
-data.2.4 <- matrix(c(1,2,3,4,5,-2,7,9), nrow = 4, ncol = 2, dimnames = list(c("p1", "p2", "p3", "p4"), c("x","y")))
+data.2.4 <- as.data.frame(matrix(c(1,2,3,4,5,-2,7,9), nrow = 4, ncol = 2, dimnames = list(c("p1", "p2", "p3", "p4"), c("x","y"))))
+
 
 data <- matrix(c(1,2,5,-2), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("x","y")))
 
@@ -35,8 +36,20 @@ nupoint <- c(x, y = 0) #create new datapoint
 extras.df <- rbind(data, nupoint) #append the new datapoint
 extras.df[order(rownames(extras.df)),] #re-order the dataframe
 
+data.2.4$switch <- as.logical((data.2.4$y)*(lead(data.2.4$y)) < 0) #detect if the next point has a sign-switch
+data.2.4
 
 
+triangle.FUN <- function(data){
+  return(str(data))
+  
+  if(data[data$"switch" == "TRUE",]){
+    return("it works")
+    #linex <- lm(y~x, data.2.4)
+  }
+}
+  
+triangle.FUN(data.2.4)
 #potential strengths with this method:
  #All points can be ordered by date/time after they are appended.
 
