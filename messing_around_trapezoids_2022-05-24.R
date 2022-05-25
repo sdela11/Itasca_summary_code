@@ -35,6 +35,15 @@ nupoint <- c(x, y = 0) #create new datapoint
 extras.df <- rbind(data, nupoint) #append the new datapoint
 extras.df[order(rownames(extras.df)),] #re-order the dataframe
 
+
+
+#potential strengths with this method:
+ #All points can be ordered by date/time after they are appended.
+
+#problems to solve:
+ #turning date format into x-coordinate
+ #create an if statement to process these, drawing in the previous and next columns.
+
 #y = mx + b
 
 #0 = mx + b
