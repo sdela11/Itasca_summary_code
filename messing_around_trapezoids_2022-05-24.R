@@ -10,10 +10,9 @@ library(tidyverse)
 library(dplyr)
 library(lubridate)
 
-p1 <- xy.coords(1, y = 5)
-p2 <- xy.coords(2, y = -2)
-class(p1)
 
+#create simple matrix, 2x2 or 2x4
+data.2.4 <- matrix(c(1,2,3,4,5,-2,7,9), nrow = 4, ncol = 2, dimnames = list(c("p1", "p2", "p3", "p4"), c("x","y")))
 
 data <- matrix(c(1,2,5,-2), nrow = 2, ncol = 2, dimnames = list(c("p1", "p2"), c("x","y")))
 
@@ -28,6 +27,16 @@ line2 <- lm(y~x, as.data.frame(data))
 summary(line2)
 
 co <- coef(line2)
+int <- co["(Intercept)"]
+slope <- co["x"]
+
+x <- (-slope)/int
+x
+nupoint <- c(x, y = 0)
+nupoint
+
+out <- rbind(data, nupoint)
+out
 
 #y = mx + b
 
