@@ -20,13 +20,14 @@
 library(lubridate)
 library(stringr)
 library(tidyverse)
-library(cowplot)
+#library(cowplot)
 library(stringr)
 library(dplyr)
 library(glue) #from dplyr
 
 
-setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
+#setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
+setwd("C:/Users/sbaue/coding/Itasca_project_19-21")
 
 temps <- read.csv("ALL.csv")
 head(temps)
@@ -38,10 +39,3 @@ temps <- temps %>% group_by(name, date(as.POSIXct(date.time))) %>%
 head(temps)
 str(temps)
 
-date
-# print(avg)
-max <- temps %>% group_by(longdate) %>% 
-  summarise(max = max(value))
-# print(max)
-min <- temps %>% group_by(longdate) %>% 
-  summarise(min = min(value))
