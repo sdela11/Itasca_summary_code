@@ -39,16 +39,24 @@ temps <- temps %>% group_by(name, date(as.POSIXct(date.time))) %>%
             min = min(value)) %>% 
   ungroup()
 temps.s <- temps %>% 
-  distinct(date, .keep_all = TRUE)
+  distinct(date,name, .keep_all = TRUE)
 
 temps.s[ ,c("X", "unit", "value", "date.time", "date(as.POSIXct(date.time))")] <- NULL #remove those excess columns!
+temps.s[,"treatment"] <- substring(temps.s$site, 1,2)
 
+head(temps.s)
+str(temps.s)
 
-May.data <- temps.s %>%  
-  filter(date >= as.POSIXct("2020-05-01") & date <= as.POSIXct("2020-05-31"))
-head(May.data)
+May.m10 <- temps.s %>%  
+  filter(date >= as.POSIXct("2020-05-01") & date <= as.POSIXct("2020-05-31")) %>% 
+  filter(position == "m10")
 
+head(May.m10)
+str(May.m10)
 
-data <- May.data
-f <- ggplot(data, aes(date, max))
+data <- May.m10
+f <- ggplot(data, aes(site, max), fill = treatment)
+myplot <- f + geom_boxplot() +
+  labs(title = "May Daily Maximum Temperatures", subtitle = "10cm below mineral surface") #fill = "Treatment"
 
+print(myplot)
