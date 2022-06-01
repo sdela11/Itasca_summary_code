@@ -28,5 +28,20 @@ library(glue) #from dplyr
 
 setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
 
-data <- read.csv("ALL.csv")
-head(data)
+temps <- read.csv("ALL.csv")
+head(temps)
+
+temps <- temps %>% group_by(name, date(as.POSIXct(date.time))) %>% 
+  summarise(meantemp = mean(value), max = max(value), min = min(value)) %>% 
+  ungroup()
+
+head(temps)
+str(temps)
+
+date
+# print(avg)
+max <- temps %>% group_by(longdate) %>% 
+  summarise(max = max(value))
+# print(max)
+min <- temps %>% group_by(longdate) %>% 
+  summarise(min = min(value))
