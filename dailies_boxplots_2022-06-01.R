@@ -33,9 +33,22 @@ temps <- read.csv("ALL.csv")
 head(temps)
 
 temps <- temps %>% group_by(name, date(as.POSIXct(date.time))) %>% 
-  summarise(meantemp = mean(value), max = max(value), min = min(value)) %>% 
+  mutate(date = date(as.POSIXct(date.time)), 
+            meantemp = mean(value), 
+            max = max(value), 
+            min = min(value)) %>% 
   ungroup()
+temps.s <- temps %>% 
+  distinct(date, .keep_all = TRUE)
 
-head(temps)
-str(temps)
+temps.s[ ,c("X", "unit", "value", "date.time", "date(as.POSIXct(date.time))")] <- NULL #remove those excess columns!
+
+
+May.data <- temps.s %>%  
+  filter(date >= as.POSIXct("2020-05-01") & date <= as.POSIXct("2020-05-31"))
+head(May.data)
+
+
+data <- May.data
+f <- ggplot(data, aes(date, max))
 
