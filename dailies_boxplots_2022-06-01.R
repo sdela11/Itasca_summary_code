@@ -36,7 +36,8 @@ temps.NA <- temps1[is.na(temps$value),] #check for correct version of "ALL.csv"
 view(temps.NA)
 
 #on-the-fly editing of m01surf and m02surf:
-temps1$position[temps1$position == "m01surf" | temps1$position == "m02surf"] <- "lsurf"
+temps1$position[temps1$position == "m01surf"] <- "lsurf"
+temps1$position[temps1$position == "m02surf"] <- "m0surf"
 
 #checks
 #head(temps1[grep("C5A_R1_lsurf", temps1$name),])
@@ -44,6 +45,8 @@ temps1$position[temps1$position == "m01surf" | temps1$position == "m02surf"] <- 
 #head(temps1[grep("C5A_R3_m02surf", temps$name),])
 
 #remove unk_unk_unk... files on the fly
+str(temps1[grep("unk", temps1$name, ignore.case = TRUE),]) #find the "unk" files
+temps1 <- temps1[-(grep("unk", temps1$name, ignore.case = TRUE)),] #delete them
 
 
 #create temps.2 and temps.s
