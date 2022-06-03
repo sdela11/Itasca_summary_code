@@ -78,7 +78,7 @@ str(May)
 data <- May #set data
 f <- ggplot(data, aes(site, max, fill = treatment))
 myplot <- f + geom_boxplot() +
-  facet_wrap(vars(position)) +
+  facet_wrap(vars(position), scales = "y_free") +
   stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
   labs(x = "Site", y = expression(paste("Daily Maximum Temperature (", degree~ C, ")")), 
        title = "May 2021 Daily Maximum Temperatures", 
