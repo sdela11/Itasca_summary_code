@@ -72,19 +72,35 @@ May <- temps.s %>%
 head(May)
 str(May)
 
-#Beginning of ggplot function
 
-data <- May #set data
+
+#Beginning of ggplot function
+Boxplot.FUN <- function(month,year){
+  
+ data <- temps.s %>% 
+   filter(date >= as.POSIXct(glue("{year}-{month}-01")) & date <= as.POSIXct("{year}-{month}-31")) %>% 
+   filter(max < 70 & min > -40)
+
+ month.name <- month.name(month)
+
 f <- ggplot(data, aes(site, max, fill = treatment)) 
 myplot <- f + geom_boxplot(outlier.shape = NA) +
   facet_wrap(vars(position), scales = "free_y") +
   stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
   geom_jitter(size = 0.5, alpha = 0.5) +
   labs(x = "Site", y = expression(paste("Daily Maximum Temperature (", degree~ C, ")")), 
-       title = "May 2021 Daily Maximum Temperatures", 
+       title = glue("{month.name} {year} Daily Maximum Temperatures"), 
        fill = "Treatment") +
   scale_fill_grey(start = 0.95, end = 0.3)
 #display.brewer.all(colorblindFriendly = TRUE)
-print(myplot)
+print(myplot) 
+}  
+###function end.
 
+#input creation:
+
+month.seq <- seq.Date(my("11-2019"), my("11-2021"), by = "month")
+input.df <- tibble(month = month(month.seq), year = year(month.seq))
+
+map2(input.df$month, input.df$year, Boxplot.FUN)
 
