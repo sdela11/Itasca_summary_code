@@ -67,7 +67,6 @@ str(temps.s)
 
 May <- temps.s %>%  
   filter(date >= as.POSIXct("2020-05-01") & date <= as.POSIXct("2020-05-31")) %>% 
-  #filter(position == "m10") %>% 
   filter(max < 70)
 
 head(May)
@@ -76,10 +75,11 @@ str(May)
 #Beginning of ggplot function
 
 data <- May #set data
-f <- ggplot(data, aes(site, max, fill = treatment))
-myplot <- f + geom_boxplot() +
-  facet_wrap(vars(position), scales = "y_free") +
+f <- ggplot(data, aes(site, max, fill = treatment)) 
+myplot <- f + geom_boxplot(outlier.shape = NA) +
+  facet_wrap(vars(position), scales = "free_y") +
   stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
+  geom_jitter(size = 0.5, alpha = 0.5) +
   labs(x = "Site", y = expression(paste("Daily Maximum Temperature (", degree~ C, ")")), 
        title = "May 2021 Daily Maximum Temperatures", 
        fill = "Treatment") +
@@ -87,10 +87,4 @@ myplot <- f + geom_boxplot() +
 #display.brewer.all(colorblindFriendly = TRUE)
 print(myplot)
 
-
-df2 <- data.frame(x = 1:5 , y = 1:25, z = 1:25)
-p <- ggplot(df2, aes(x, y))
-p <- p + geom_point(aes(shape = z), size = 4) +
-  scale_shape_identity()
-print(p)
 
