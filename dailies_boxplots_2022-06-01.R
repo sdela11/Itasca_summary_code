@@ -32,8 +32,21 @@ setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
 
 temps1 <- read.csv("ALL.csv")
 head(temps1)
+temps.NA <- temps1[is.na(temps$value),] #check for correct version of "ALL.csv"
+view(temps.NA)
+
+#on-the-fly editing of m01surf and m02surf:
+temps1$position[temps1$position == "m01surf" | temps1$position == "m02surf"] <- "lsurf"
+
+#checks
+#head(temps1[grep("C5A_R1_lsurf", temps1$name),])
+#head(temps1[grep("C5A_R3_m01surf", temps$name),])
+#head(temps1[grep("C5A_R3_m02surf", temps$name),])
+
+#remove unk_unk_unk... files on the fly
 
 
+#create temps.2 and temps.s
 temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>% 
   mutate(date = date(as.POSIXct(date.time)), 
             meantemp = mean(value), 
