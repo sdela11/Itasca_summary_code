@@ -24,10 +24,11 @@ library(tidyverse)
 library(stringr)
 library(dplyr)
 library(glue) #from dplyr
+library(RColorBrewer)
 
 
-#setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
-setwd("C:/Users/sbaue/coding/Itasca_project_19-21")
+setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
+#setwd("C:/Users/sbaue/coding/Itasca_project_19-21")
 
 temps <- read.csv("ALL.csv")
 head(temps)
@@ -54,9 +55,24 @@ May.m10 <- temps.s %>%
 head(May.m10)
 str(May.m10)
 
-data <- May.m10
-f <- ggplot(data, aes(site, max), fill = treatment)
-myplot <- f + geom_boxplot() +
-  labs(title = "May Daily Maximum Temperatures", subtitle = "10cm below mineral surface") #fill = "Treatment"
+#Beginning of ggplot function
 
+data <- temps.s #set data
+f <- ggplot(data, aes(site, max, fill = treatment))
+myplot <- f + geom_boxplot() +
+  facet_wrap(vars(position)) +
+  stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
+  labs(x = "Site", y = expression(paste("Daily Maximum Temperature (", degree~ C, ")")), 
+       title = "May Daily Maximum Temperatures", subtitle = "10cm below mineral surface",
+       fill = "Treatment") +
+  scale_fill_grey(start = 0.95, end = 0.3)
+#display.brewer.all(colorblindFriendly = TRUE)
 print(myplot)
+
+
+df2 <- data.frame(x = 1:5 , y = 1:25, z = 1:25)
+p <- ggplot(df2, aes(x, y))
+p <- p + geom_point(aes(shape = z), size = 4) +
+  scale_shape_identity()
+print(p)
+
