@@ -63,7 +63,7 @@ myplot <- f + geom_boxplot() +
   facet_wrap(vars(position)) +
   stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
   labs(x = "Site", y = expression(paste("Daily Maximum Temperature (", degree~ C, ")")), 
-       title = "May Daily Maximum Temperatures", subtitle = "10cm below mineral surface",
+       title = "May 2021 Daily Maximum Temperatures", 
        fill = "Treatment") +
   scale_fill_grey(start = 0.95, end = 0.3)
 #display.brewer.all(colorblindFriendly = TRUE)
