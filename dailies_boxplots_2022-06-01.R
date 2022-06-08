@@ -84,7 +84,7 @@ Boxplot.FUN <- function(year, month){
   
   month.name <- month.name[[as.numeric(month)]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
   
-  png(file = glue("dailymax_{month.name}_{year}.png"), width = 1100, height = 450)
+  png(file = glue("dailymin_{month.name}_{year}.png"), width = 1100, height = 450)
 
  data <- temps.s[grep(glue("{year}-{month}-"), temps.s$date),]
  data <- data %>% filter(max < 70 & min > -40)
@@ -99,8 +99,8 @@ myplot <- f + geom_boxplot(outlier.shape = NA) +
   facet_wrap(vars(position), scales = "free_y") +
   stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
   geom_jitter(size = 0.5, alpha = 0.5) +
-  labs(x = "Site", y = expression(paste("Daily Maximum Temperature (", degree~ C, ")")), 
-       title = glue("{month.name} {year} Daily Maximum Temperatures"), 
+  labs(x = "Site", y = expression(paste("Daily Minimum Temperature (", degree~ C, ")")), 
+       title = glue("{month.name} {year} Daily Minimum Temperatures"), 
        fill = "Treatment") +
   scale_fill_grey(start = 0.95, end = 0.3)
 #display.brewer.all(colorblindFriendly = TRUE)
