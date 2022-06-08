@@ -32,8 +32,8 @@ setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
 
 temps1 <- read.csv("ALL.csv")
 head(temps1)
-temps.NA <- temps1[is.na(temps$value),] #check for correct version of "ALL.csv"
-view(temps.NA)
+temps1.NA <- temps1[is.na(temps1$value),] #check for correct version of "ALL.csv"
+view(temps1.NA)
 
 #on-the-fly editing of m01surf and m02surf:
 temps1$position[temps1$position == "m01surf"] <- "lsurf"
@@ -99,8 +99,8 @@ print(myplot)
 
 #input creation:
 
-month.seq <- seq.Date(my("11-2019"), my("11-2021"), by = "month")
-input.df <- tibble(month = month(month.seq), year = year(month.seq))
-
+month.seq <- seq.Date(my("11-2019"), my("11-2021"), by = "month") #create sequence of months b/t start and end dates.
+input.df <- tibble(month = sprintf("%02d", month(month.seq)), year = year(month.seq))
+view(input.df)
 map2(input.df$month, input.df$year, Boxplot.FUN)
 
