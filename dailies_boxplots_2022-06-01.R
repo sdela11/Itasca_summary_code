@@ -47,10 +47,15 @@ temps1$position[temps1$position == "m02surf"] <- "m0surf"
 #remove unk_unk_unk... files on the fly
 str(temps1[grep("unk", temps1$name, ignore.case = TRUE),]) #find the "unk" files
 temps1 <- temps1[-(grep("unk", temps1$name, ignore.case = TRUE)),] #delete them
+UNK <- temps1[grep("unk", temps1$position, ignore.case = TRUE),]
+UNK
+#remove D2B R3 lsurf i90 2021 on the fly (compromised temp sensor)
+str(temps1[grep("D2B_R3_lsurf", temps1$name, ignore.case = TRUE),]) #find
+temps1 <- temps1[!(grep("D2B_R3_lsurf_i90_2021", temps1$name)),]
 
 
 #create temps.2 and temps.s
-temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>% 
+temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>%
   mutate(date = date(as.POSIXct(date.time)), 
             meantemp = mean(value), 
             max = max(value), 
@@ -110,8 +115,6 @@ month.seq <- seq.Date(my("11-2019"), my("10-2021"), by = "month") #create sequen
 input.df <- tibble(year = year(month.seq), month = sprintf("%02d", month(month.seq))) #create tibble out of separate elements, use sprintf to include leading zero.
 
 view(input.df)
-class(input.df$year)
-class(input.df$month)
 
 #Test one month:
 Boxplot.FUN(input.df[1,1], input.df[1,2])
