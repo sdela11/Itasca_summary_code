@@ -52,7 +52,15 @@ str(temps1)
 str(temps1[grep("D2B_R3_lsurf", temps1$name, ignore.case = TRUE),]) #find
 temps1 <- temps1[-(grep("D2B_R3_lsurf_i90_2021", temps1$name)),]
 str(temps1)
+#remove high pre-install temps from November 2019 on the fly
+str(temps1[(temps1$date.time <= as.POSIXct("2019-11-30") & temps1$value > 15),])
+view(temps1[(temps1$date.time <= as.POSIXct("2019-11-30") & temps1$value > 15),])
 
+temps1 <- temps1[!(temps1$date.time < as.POSIXct("2019-11-30") & (temps1$value > 15)),]
+#temps1 <- temps1 %>% 
+ # filter
+head(temps1)
+str(temps1)
 #create temps.2 and temps.s
 temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>%
   mutate(date = date(as.POSIXct(date.time)), 
@@ -70,13 +78,9 @@ temps.s[,"treatment"] <- substring(temps.s$site, 1,2)
 head(temps.s)
 str(temps.s)
 
-May <- temps.s %>%  
-  filter(date >= as.POSIXct("2020-05-01") & date <= as.POSIXct("2020-05-31")) %>% 
-  filter(max < 70)
-
-head(May)
-str(May)
-
+Nov.19 <- temps.s[temps.s$date < as.POSIXct("2019-11-30") & temps.s$max > 15,]
+Nov.19 <- temps1[temps1$date.time < as.POSIXct("2019-11-30") & temps1$max > 15,]
+view(Nov.19)
 
 
 #Beginning of ggplot function
