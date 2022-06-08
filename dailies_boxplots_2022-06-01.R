@@ -33,7 +33,7 @@ setwd("C:/Users/sbaue/coding/Itasca_project_19-21")
 temps1 <- read.csv("ALL.csv")
 head(temps1)
 temps1.NA <- temps1[is.na(temps1$value),] #check for correct version of "ALL.csv"
-view(temps1.NA)
+#view(temps1.NA)
 
 #on-the-fly editing of m01surf and m02surf:
 temps1$position[temps1$position == "m01surf"] <- "lsurf"
@@ -47,12 +47,11 @@ temps1$position[temps1$position == "m02surf"] <- "m0surf"
 #remove unk_unk_unk... files on the fly
 str(temps1[grep("unk", temps1$name, ignore.case = TRUE),]) #find the "unk" files
 temps1 <- temps1[-(grep("unk", temps1$name, ignore.case = TRUE)),] #delete them
-UNK <- temps1[grep("unk", temps1$position, ignore.case = TRUE),]
-UNK
+str(temps1)
 #remove D2B R3 lsurf i90 2021 on the fly (compromised temp sensor)
 str(temps1[grep("D2B_R3_lsurf", temps1$name, ignore.case = TRUE),]) #find
-temps1 <- temps1[!(grep("D2B_R3_lsurf_i90_2021", temps1$name)),]
-
+temps1 <- temps1[-(grep("D2B_R3_lsurf_i90_2021", temps1$name)),]
+str(temps1)
 
 #create temps.2 and temps.s
 temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>%
