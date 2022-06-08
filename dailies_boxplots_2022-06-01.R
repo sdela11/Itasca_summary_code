@@ -118,9 +118,10 @@ view(input.df)
 class(input.df$year)
 class(input.df$month)
 
+#Test one month:
 Boxplot.FUN(input.df[1,1], input.df[1,2])
 
-
+#map2 over input.df (all months in data set)
 map2(input.df$year, input.df$month, Boxplot.FUN)
 
 #MISC TESTING:
