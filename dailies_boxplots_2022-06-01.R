@@ -79,13 +79,14 @@ Boxplot.FUN <- function(year, month){
   
   date1 <- as.POSIXct(as.character(glue("{year}-{month}-01")), format = "%Y-%m-%d")
   print(date1)
-  date2 <- as.POSIXct(as.character(glue("{year}-{month+1}-01")), format = "%Y-%m-%d")-ddays(1)
+  
+  date2 <- as.POSIXct(as.character(glue("{year}-{as.numeric(month)+1}-01")), format = "%Y-%m-%d")-ddays(1)
   print(date2)
  data <- temps.s %>% 
    filter(date >= date1 & date <= date2) %>% 
    filter(max < 70 & min > -40)
 
- month.name <- month.name[[month]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
+ month.name <- month.name[[as.numeric(month)]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
 
 f <- ggplot(data, aes(site, max, fill = treatment)) 
 myplot <- f + geom_boxplot(outlier.shape = NA) +
@@ -108,16 +109,23 @@ month.seq <- seq.Date(my("11-2019"), my("11-2021"), by = "month") #create sequen
 input.df <- tibble(year = year(month.seq), month = sprintf("%02d", month(month.seq))) #create tibble out of separate elements, use sprintf to include leading zero.
 
 view(input.df)
+class(input.df$year)
+class(input.df$month)
 
 Boxplot.FUN(input.df[1,1], input.df[1,2])
 
-(, Boxplot.FUN)
 
 map2(input.df$year, input.df$month, Boxplot.FUN)
 
+#MISC TESTING:
 
 test.string <- as.POSIXct(glue("{input.df[1,1]}-{input.df[1,2]}-01"))-ddays(1)
-test.string
-m <- month.name[[04]]
-m
-month.name
+
+month <- as.numeric(05)
+month
+year <- as.numeric(2020)
+date2 <- as.POSIXct(as.character(glue("{year}-{month+1}-01")), format = "%Y-%m-%d")-ddays(1)
+date2
+
+month.name[[4]]
+
