@@ -28,7 +28,7 @@ library(RColorBrewer)
 
 
 setwd("C:/Users/sbaue/coding/R_TEMPRY/Itasca_project_19-21")
-#setwd("C:/Users/sbaue/coding/Itasca_project_19-21")
+setwd("C:/Users/sbaue/coding/Itasca_project_19-21")
 
 temps1 <- read.csv("ALL.csv")
 head(temps1)
@@ -54,10 +54,11 @@ temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>%
   mutate(date = date(as.POSIXct(date.time)), 
             meantemp = mean(value), 
             max = max(value), 
-            min = min(value)) %>% 
+            min = min(value))%>% 
   ungroup()
 temps.s <- temps2 %>% 
-  distinct(date,name, .keep_all = TRUE)
+  distinct(date,name, .keep_all = TRUE) %>% 
+  mutate(difference = max - min, amp = (max + min)/2)
 
 temps.s[ ,c("X", "unit", "value", "date.time", "date(as.POSIXct(date.time))")] <- NULL #remove those excess columns!
 temps.s[,"treatment"] <- substring(temps.s$site, 1,2)
