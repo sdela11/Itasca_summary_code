@@ -77,16 +77,18 @@ str(May)
 #Beginning of ggplot function
 Boxplot.FUN <- function(year, month){
   
+  month.name <- month.name[[as.numeric(month)]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
+  
+  png(file = glue("dailymax_{month.name}_{year}.png"), width = 1100, height = 450)
+  
   date1 <- as.POSIXct(as.character(glue("{year}-{month}-01")), format = "%Y-%m-%d")
   print(date1)
   
-  date2 <- as.POSIXct(as.character(glue("{year}-{as.numeric(month)+1}-01")), format = "%Y-%m-%d")-ddays(1)
+  date2 <- as.POSIXct(as.character(glue("{year}-{as.numeric(month)+1}-01")), format = "%Y-%m-%d")-ddays(1) #To get last day of month: 1st day of next month, subtract 1 day.
   print(date2)
  data <- temps.s %>% 
    filter(date >= date1 & date <= date2) %>% 
    filter(max < 70 & min > -40)
-
- month.name <- month.name[[as.numeric(month)]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
 
 f <- ggplot(data, aes(site, max, fill = treatment)) 
 myplot <- f + geom_boxplot(outlier.shape = NA) +
@@ -98,8 +100,12 @@ myplot <- f + geom_boxplot(outlier.shape = NA) +
        fill = "Treatment") +
   scale_fill_grey(start = 0.95, end = 0.3)
 #display.brewer.all(colorblindFriendly = TRUE)
-print(myplot) 
+
+print(myplot)
+dev.off()
+
 }  
+
 ###function end.
 
 #input creation:
