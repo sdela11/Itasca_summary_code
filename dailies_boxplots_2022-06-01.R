@@ -84,7 +84,7 @@ Boxplot.FUN <- function(year, month){
   
   month.name <- month.name[[as.numeric(month)]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
   
-  png(file = glue("dailymin_{month.name}_{year}.png"), width = 1100, height = 450)
+  png(file = glue("./AVG_DAILY_MIN/dailymin_{month.name}_{year}.png"), width = 1100, height = 450)
 
  data <- temps.s[grep(glue("{year}-{month}-"), temps.s$date),]
  data <- data %>% filter(max < 70 & min > -40)
