@@ -105,7 +105,7 @@ dev.off()
 
 #input creation:
 
-month.seq <- seq.Date(my("11-2019"), my("11-2021"), by = "month") #create sequence of months b/t start and end dates.
+month.seq <- seq.Date(my("11-2019"), my("10-2021"), by = "month") #create sequence of months b/t start and end dates.
 
 input.df <- tibble(year = year(month.seq), month = sprintf("%02d", month(month.seq))) #create tibble out of separate elements, use sprintf to include leading zero.
 
