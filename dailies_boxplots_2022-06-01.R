@@ -60,7 +60,7 @@ str(temps1)
 
 #remove high pre-install temps from November 2019 on the fly. This will need to stay here.
 str(temps1[(temps1$date.time <= as.POSIXct("2019-11-30") & temps1$value > 15),]) #find
-view(temps1[(temps1$date.time <= as.POSIXct("2019-11-30") & temps1$value > 15),]) #view
+#view(temps1[(temps1$date.time <= as.POSIXct("2019-11-30") & temps1$value > 15),]) #view
 
 temps1 <- temps1[!(temps1$date.time < as.POSIXct("2019-11-30") & (temps1$value > 15)),] #destroy. temps1 "does not equal" (!) the rows where these two criteria are met.
 head(temps1)
@@ -79,7 +79,7 @@ temps2 <- temps1 %>% group_by(name, date(as.POSIXct(date.time))) %>%
   ungroup()
 temps.s <- temps2 %>% 
   distinct(date,name, .keep_all = TRUE) %>% 
-  mutate(difference = max - min, amp = (max + min)/2)
+  mutate(difference = max - min, amp = (max - min)/2)
 
 temps.s[ ,c("X", "unit", "value", "date.time", "date(as.POSIXct(date.time))")] <- NULL #remove those excess columns!
 temps.s[,"treatment"] <- substring(temps.s$site, 1,2) #Add treatment column (C2, D2, C5, D5). Create from a substring (1st two elements of "site")
