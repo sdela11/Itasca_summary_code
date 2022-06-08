@@ -88,7 +88,7 @@ Boxplot.FUN <- function(year, month){
   
   month.name <- month.name[[as.numeric(month)]] #select the month name that corresponds to the month number. month.name is a constant list of month names in English.
   
-  png(file = glue("./AVG_DAILY_DIFF/dailydiff_{month.name}_{year}.png"), width = 1100, height = 450)
+  png(file = glue("./AVG_DAILY_AMP/dailyamp_{month.name}_{year}.png"), width = 1100, height = 450)
 
  data <- temps.s[grep(glue("{year}-{month}-"), temps.s$date),]
  data <- data %>% filter(max < 70 & min > -40)
@@ -98,13 +98,13 @@ Boxplot.FUN <- function(year, month){
  # y variable: maximum = max, minimum = min, difference = difference, amplitude = amp
  # y label and title: change as needed.
  
-f <- ggplot(data, aes(site, difference, fill = treatment)) 
+f <- ggplot(data, aes(site, amp, fill = treatment)) 
 myplot <- f + geom_boxplot(outlier.shape = NA) +
   facet_wrap(vars(position), scales = "free_y") +
   stat_summary(fun = "mean", shape = 18, color = "Black", show.legend = FALSE) +
   geom_jitter(size = 0.5, alpha = 0.5) +
-  labs(x = "Site", y = expression(paste("Daily Temperature Difference (", degree~ C, ")")), 
-       title = glue("{month.name} {year} Daily Temperature Difference"), 
+  labs(x = "Site", y = expression(paste("Daily Amplitude (", degree~ C, ")")), 
+       title = glue("{month.name} {year} Daily Amplitude (Max-Min)/2"), 
        fill = "Treatment") +
   scale_fill_grey(start = 0.95, end = 0.3)
 #display.brewer.all(colorblindFriendly = TRUE)
