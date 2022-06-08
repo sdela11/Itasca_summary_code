@@ -89,6 +89,11 @@ Boxplot.FUN <- function(year, month){
  data <- temps.s[grep(glue("{year}-{month}-"), temps.s$date),]
  data <- data %>% filter(max < 70 & min > -40)
  
+ #SWAPS FOR DIFFERENT STATS
+ # png file name (above), as needed
+ # y variable: maximum = max, minimum = min, daily difference = difference, amplitude = amp
+ # y label and title: change as needed.
+ 
 f <- ggplot(data, aes(site, max, fill = treatment)) 
 myplot <- f + geom_boxplot(outlier.shape = NA) +
   facet_wrap(vars(position), scales = "free_y") +
