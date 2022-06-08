@@ -129,10 +129,21 @@ map2(input.df$year, input.df$month, Boxplot.FUN)
 
 test.string <- as.POSIXct(glue("{input.df[1,1]}-{input.df[1,2]}-01"))-ddays(1)
 
-month <- as.numeric(05)
+
 month
-year <- as.numeric(2020)
+
 date2 <- as.POSIXct(as.character(glue("{year}-{month+1}-01")), format = "%Y-%m-%d")-ddays(1)
+year
+May <- temps.s %>%  filter(grepl(glue("{year}-{month}-")), temps.s$date)
+
+May <- temps.s[grep("2020-05-", temps.s$date),]
+
+#Here's something that works (for filtering rows with desired month):
+month <- as.character("05")
+year <- as.numeric(2020)
+May <- temps.s[grep(glue("{year}-{month}-"), temps.s$date),]
+
+May
 date2
 
 month.name[[4]]
