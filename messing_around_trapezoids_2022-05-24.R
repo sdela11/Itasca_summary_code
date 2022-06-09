@@ -36,16 +36,34 @@ nupoint <- c(x, y = 0) #create new datapoint
 extras.df <- rbind(data, nupoint) #append the new datapoint
 extras.df[order(rownames(extras.df)),] #re-order the dataframe
 
-data.2.4$switch <- as.logical((data.2.4$y)*(lead(data.2.4$y)) < 0) #detect if the next point has a sign-switch
-data.2.4
+data.2.4$switch <- as.logical((data.2.4$y)*(lead(data.2.4$y)) < 0) #detect if the next point has a sign-switch 
 
+switch.df <- data.2.4[data.2.4$switch == TRUE,]
+switch.df
 
 triangle.FUN <- function(data){
-  return(str(data))
-  with(data, if(switch == "TRUE"){
-    print("it works")
-    #linex <- lm(y~x, data.2.4)
-  })
+  #return(str(data))
+  switch.df <- data[data$switch == "TRUE" | lag(data$switch) == "TRUE",]
+  RN.vec <- as.list(c(row.names(switch.df))) #creates a list of row names where the next point is across the axis. might not be needed.
+return(switch.df)
+  
+  
+  }
+  
+  matrix(c())
+  line2 <- lm(y~x, as.data.frame(data))
+  summary(line2)
+  
+  co <- coef(line2)
+  int <- co["(Intercept)"]
+  slope <- co["x"]
+  
+  x <- (-slope)/int #this is how we solve for x when y = 0
+  nupoint <- c(x, y = 0) #create new datapoint
+  extras.df <- rbind(data, nupoint) #append the new datapoint
+  extras.df[order(rownames(extras.df)),] #re-order the dataframe
+  
+  
 }
   
 triangle.FUN(data.2.4)
