@@ -66,6 +66,10 @@ summary(fm.lsurf.site)
 #Intercept is C2A (4950), highly significant, D2A is significant (.00106), D2B is very highly significant (0.0352)
 #Adjusted R-squared: 0.6585, p-value: 0.003993.
 
+#--------------#
+
+#M0SURF
+
 fm.m0surf.trt <- lm(degree.days ~ treatment, data = data1[grep("m0surf", data1$position),])
 anova(fm.m0surf.trt)
 summary(fm.m0surf.trt)
@@ -83,6 +87,37 @@ summary(fm.m0surf.site)
 #C5B (0.009824) and D5A (0.002762) are highly sig. (above intercept est.)
 #D2A (0.0502) is almost sig. (below intercept est.)
 
+#--------------#
+
+#M10
+
+fm.m10.trt <- lm(degree.days ~ treatment, data = data1[grep("m10", data1$position),])
+anova(fm.m10.trt)
+summary(fm.m10.trt)
+
+
+
+fm.m10.site <- lm(degree.days ~ site, data = data1[grep("m10", data1$position),])
+anova(fm.m10.site)
+summary(fm.m10.site)
+
+
+#--------------#
+
+#M30
+
+fm.m30.trt <- lm(degree.days ~ treatment, data = data1[grep("m30", data1$position),])
+anova(fm.m30.trt)
+summary(fm.m30.trt)
+
+
+
+fm.m30.site <- lm(degree.days ~ site, data = data1[grep("m30", data1$position),])
+anova(fm.m30.site)
+summary(fm.m30.site)
+
+
+# --------------------------------------------------------------- #
 #Attempt at developing function. Not in use at the moment.
 
 output.FUN <- function(position){
