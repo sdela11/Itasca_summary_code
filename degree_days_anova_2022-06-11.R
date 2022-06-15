@@ -118,12 +118,24 @@ summary(fm.m10.site)
 fm.m30.trt <- lm(degree.days ~ treatment, data = data1[grep("m30", data1$position),])
 anova(fm.m30.trt)
 summary(fm.m30.trt)
-
+#anova reveals non-significant treatment effect (Pr(>F): 0.05518)
+#df: 3 and 16
+#Intercept C2A (estimate: 4106)
+#D2 (+288.88, p = 0.0366) and D5 (+409.44, p = 0.0137) are significant. 
+#NOTE: C5 treatment has a lower estimate than D2, though it might not be significant.
 
 
 fm.m30.site <- lm(degree.days ~ site, data = data1[grep("m30", data1$position),])
 anova(fm.m30.site)
 summary(fm.m30.site)
+
+#site effect is significant: Pr(>F) = 0.02215
+#df: 6 and 13
+#Intercept C2A estimate is 4138
+#site D2B (+437.78, p = 0.0097) is HS, site D5A (+377.18, p = 0.0216 is S)
+#Adjusted r-squared: 0.4631
+
+
 
 
 # --------------------------------------------------------------- #
