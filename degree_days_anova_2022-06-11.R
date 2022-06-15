@@ -94,13 +94,22 @@ summary(fm.m0surf.site)
 fm.m10.trt <- lm(degree.days ~ treatment, data = data1[grep("m10", data1$position),])
 anova(fm.m10.trt)
 summary(fm.m10.trt)
-
-
+#treatment is not significant (Pr >F: 0.09957)
+#Intercept: C2A, 4286
+#DF: 3 and 17
+#C5 treatment is significant (0.0308), +328.74
+#Adjusted R-squared: 0.1778
 
 fm.m10.site <- lm(degree.days ~ site, data = data1[grep("m10", data1$position),])
 anova(fm.m10.site)
 summary(fm.m10.site)
 
+#site effect is significant (Pr(>F): 0.003382)
+#Df: 6 and 14
+#Intercept (C2A), est: 4421
+#Site D2A is significant, p = 0.0236, -355.3. 
+#Site C2B (-270.1) and C5A (+247.7) are p < 0.1
+#Adjusted R-squared: 0.5873
 
 #--------------#
 
