@@ -51,11 +51,20 @@ fivenum(data1[grep("air", data1$position), "degree.days"], na.rm = TRUE)
 
 #LSURF
 
-fm.lsurf <- lm(degree.days ~ treatment, data = data1[grep("lsurf", data1$position),])
-anova(fm.lsurf)
-summary(fm.lsurf)
+fm.lsurf.trt <- lm(degree.days ~ treatment, data = data1[grep("lsurf", data1$position),])
+anova(fm.lsurf.trt)
+summary(fm.lsurf.trt)
 
 #treatment is not significant.
+
+fm.lsurf.site <- lm(degree.days ~ site, data = data1[grep("lsurf", data1$position),])
+anova(fm.lsurf.site)
+summary(fm.lsurf.site)
+
+#Intercept is C2A (4950), highly significant, D2A is highly significant (.00171), D2B is very highly significant (0.00834)
+
+
+
 
 #Attempt at developing function. Not in use at the moment.
 
