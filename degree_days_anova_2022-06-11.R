@@ -30,11 +30,13 @@ view(data1$treatment)
 str(data1)
 data1$position[data1$position == "m01surf"] <- "lsurf" #where $position == "m01surf", replace with "lsurf"
 data1$position[data1$position == "m02surf"] <- "m0surf" #similar to above.
+data1 <- data1[!(data1$site == "D2B" & data1$rep == "R3" & data1$position == "lsurf"), ] #UGLY: remove D2B R3 lsurf on the fly.
 
 d1.factors <- c("site", "treatment", "rep", "position")
 data1[d1.factors] <- lapply(data1[d1.factors], factor)
 data1 <- data1[,c(32,1:31)]
 str(data1)
+view(data1)
 
 #AIR
 #can't do an ANOVA/summary, there's only 1 observation per group.
