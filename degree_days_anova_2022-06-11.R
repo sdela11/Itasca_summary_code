@@ -31,6 +31,7 @@ data1$position[data1$position == "m02surf"] <- "m0surf" #similar to above.
 
 view(data1)
 
+#AIR
 #can't do an ANOVA/summary, there's only 1 observation per group.
 fm.air <- lm(degree.days ~ as.factor(site), data = data1[grep("air", data1$position),]) #degree.days as function of site, data consists of all rows with "air" in position column.
 anova(fm.air)
@@ -41,6 +42,17 @@ plot(degree.days ~ as.factor(site), data = data1[grep("air", data1$position),] )
 
 fivenum(data1[grep("air", data1$position), "degree.days"], na.rm = TRUE)
 ?fivenum()
+
+
+#LSURF
+
+fm.lsurf <- lm(degree.days ~ as.factor(treatment), data = data1[grep("lsurf", data1$position),])
+anova(fm.lsurf)
+summary(fm.lsurf)
+
+
+
+#Attempt at developing function. Not in use at the moment.
 
 output.FUN <- function(position){
   output.list <- list()
@@ -62,8 +74,6 @@ position <- "m30"
 data <- data1[grep(as.character(position), data1$position, ignore.case = TRUE),]
 head(data)
 
-fm.lsurf <- lm(degree.days ~ as.factor(treatment), data = data1[grep("lsurf", data1$position),]) #degree.days as function of site, data consists of all rows with "air" in position column.
-anova(fm.lsurf)
-summary(fm.lsurf)
+
 
 
